@@ -1,0 +1,21 @@
+# TODO leave blank and let user fill out once they've cloned
+# the repository on their system.
+manta_install_dir: '/home/murad/Repositories/cancer-sv-pipeline/manta'
+
+# for now I've chosen keep tumor and normal bams
+# in separate directories.
+# 
+# That will allow us to just specify the directories
+# of tumor/normal, then we just create a list of all
+# bam/crams in a directory.
+# 
+# We assume that the index files are located in the same directory.
+tumor_alignments: ''
+normal_alignments: ''
+
+# path to reference fasta.  We assume the fasta index is
+# located in the same directory.
+reference_genome: ''
+
+# path to the base directory for the pipeline outputs.
+output_dir: '/home/murad/Repositories/cancer-sv-pipeline/results'

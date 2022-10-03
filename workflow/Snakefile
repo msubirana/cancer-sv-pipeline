@@ -1,0 +1,99 @@
+from os.path import basename
+from glob import glob
+from types import SimpleNamespace
+configfile: 'conf/config.yaml'
+
+# This allows for dot (.) access instead of dict access
+# of configuration parameters.
+# EXAMPLE: config['ABC'] becomes config.ABC
+config = SimpleNamespace(**config)
+
+# file follows {sample}_{BL|TI}.bam name scheme
+samples = [
+        basename(f).split('_')[0]
+        glob(os.path.join(config.bam_dir, '*.bam'))
+]
+
+rule All:
+    pass
+
+
+# ==============================================================================
+# Installation Rules
+# ==============================================================================
+rule InstallExcord:
+    """
+    Pull excord bin from github release
+    """
+rule InstallGiggle:
+    """
+    Build giggle from source
+    """
+rule InstallStix:
+    """
+    Build stix and dependencies from source (Depends on giggle)
+    """
+
+rule InstallManta:
+    """
+    Install manta from github release.
+    """
+    output:
+        # config is in bin/configManta.py
+        installation = temp(f'{config.manta_install_dir}'),
+
+    shell:
+        f"""
+        scripts/install_manta.sh {config.manta_install_dir} {config.outdir}
+        """
+
+# ==============================================================================
+# TODO STIX index creation
+# Create a STIX index with tumor samples
+# ==============================================================================
+
+rule ExcordTumors:
+    """
+    Extract discordant/split reads from tumor BAMs
+    """
+rule MakeGiggleIndex:
+    """
+    Create giggle index from excord bedpe's
+    """
+
+rule MakeSTIXIndex:
+    """
+    Create STIX index from giggle index
+    """
+
+# ==============================================================================
+# MANTA Rules
+# ==============================================================================
+
+rule ConfigManta:
+    """
+    Configure the manta calling workflow
+    """
+    input:
+        configManta = f'{rules.InstallManta.output.installation}/bin/configManta.py',
+        tumor_bam = f'{config.tumor_dir}/{{sample}}_TI.bam',
+        normal_bam = f'{config.normal_dir}/{{normal_sample}}_BL.bam',
+        reference = f'{config.reference}'
+    output:
+        rundir = f'{config.outdir}/{{sample}}_manta'
+    shell:
+        '{input.configManta}'
+        '--tumorBam       {input.tumor_bam}'
+        '--normalBam      {input.normal_bam}'
+        '--referenceFasta {input.reference}'
+        '--runDir         {output.rundir}'
+        
+# ==============================================================================
+# TODO Smoove (lumpy/SVTYPER) rules
+# Lumpy will just report all SVs so filtering will need to be done
+# with STIX to get rid of germline variants
+# ==============================================================================
+
+# ==============================================================================
+# TODO STIX filtering for germline SV callers
+# ==============================================================================
