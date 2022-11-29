@@ -1,6 +1,7 @@
 from os.path import basename
 from glob import glob
 from types import SimpleNamespace
+import os
 configfile: 'conf/config.yaml'
 
 # This allows for dot (.) access instead of dict access
@@ -9,14 +10,13 @@ configfile: 'conf/config.yaml'
 config = SimpleNamespace(**config)
 
 # file follows {sample}_{BL|TI}.bam name scheme
-samples = [
-        basename(f).split('_')[0]
-        glob(os.path.join(config.bam_dir, '*.bam'))
-]
+samples = list(set([basename(x).split('_')[0]
+    for x in glob(os.path.join(config.bam_dir, '*.bam'))]))
+
 
 rule All:
-    pass
-
+    input:
+        expand(f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz', sample=samples)
 
 # ==============================================================================
 # Installation Rules
@@ -34,17 +34,22 @@ rule InstallStix:
     Build stix and dependencies from source (Depends on giggle)
     """
 
+rule InstallDelly:
+    """
+    Install delly from github"""
 rule InstallManta:
     """
     Install manta from github release.
     """
+    input:
+        script = "scripts/install_manta.sh"
     output:
         # config is in bin/configManta.py
-        installation = temp(f'{config.manta_install_dir}'),
+        installation = f'{config.manta_install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py'
 
     shell:
-        f"""
-        scripts/install_manta.sh {config.manta_install_dir} {config.outdir}
+        """
+        {input.script} {config.manta_install_dir} {config.manta_version}
         """
 
 # ==============================================================================
@@ -67,6 +72,27 @@ rule MakeSTIXIndex:
     """
 
 # ==============================================================================
+# Delly Rules
+# ==============================================================================
+rule delly_bcf:
+    input:
+        ref = f'{config.reference}',
+        alns = f'{config.bam_dir}/{{sample}}_TI.bam',
+        exclude = f'{config.delly_excl}'
+    output:
+        f'{config.outdir}/delly/{{sample}}.bcf',
+    conda:
+        'envs/callers.yaml'
+    params:
+        uncompressed_bcf=True,
+    log:
+        f'{config.outdir}/delly/logs/{{sample}}_delly.log',
+    threads: 2  # It is best to use as many threads as samples
+    wrapper:
+        "v1.19.2/bio/delly"
+
+
+# ==============================================================================
 # MANTA Rules
 # ==============================================================================
 
@@ -75,19 +101,41 @@ rule ConfigManta:
     Configure the manta calling workflow
     """
     input:
-        configManta = f'{rules.InstallManta.output.installation}/bin/configManta.py',
-        tumor_bam = f'{config.tumor_dir}/{{sample}}_TI.bam',
-        normal_bam = f'{config.normal_dir}/{{normal_sample}}_BL.bam',
+        configManta = f'{rules.InstallManta.output.installation}',
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
         reference = f'{config.reference}'
+    params:
+        rundir = f'{config.outdir}/manta/{{sample}}_manta'
     output:
-        rundir = f'{config.outdir}/{{sample}}_manta'
+        runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py'
     shell:
-        '{input.configManta}'
-        '--tumorBam       {input.tumor_bam}'
-        '--normalBam      {input.normal_bam}'
-        '--referenceFasta {input.reference}'
-        '--runDir         {output.rundir}'
-        
+        """
+        {input.configManta} \
+        --tumorBam       {input.tumor_bam} \
+        --normalBam      {input.normal_bam} \
+        --referenceFasta {input.reference} \
+        --runDir         {params.rundir} 
+        """
+
+rule RunManta:
+    """
+    Run manta
+    """
+    input:
+        rundir = f'{rules.ConfigManta.output.runPy}'
+    output: 
+        manta_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz'
+    shell:
+        """
+        {input.rundir} \
+        -m local \
+        -j {threads} \
+        --quiet
+        """
+
+
+
 # ==============================================================================
 # TODO Smoove (lumpy/SVTYPER) rules
 # Lumpy will just report all SVs so filtering will need to be done

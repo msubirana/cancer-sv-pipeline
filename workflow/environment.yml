@@ -1,0 +1,14 @@
+name: cancer-sv-pipeline
+channels:
+  - conda-forge
+  - base
+  - bioconda
+  - R
+dependencies:
+  - wget=1.20.3
+  - snakemake=7.18.2
+  - manta=1.6.0
+  - bcftools=1.16
+  - delly=1.1.5
+  - snakemake-wrapper-utils=0.5.0
+

@@ -1,7 +1,7 @@
 # TODO leave blank and let user fill out once they've cloned
 # the repository on their system.
-manta_install_dir: '/home/murad/Repositories/cancer-sv-pipeline/manta'
-
+manta_install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
+manta_version: '1.6.0'
 # for now I've chosen keep tumor and normal bams
 # in separate directories.
 # 
@@ -10,12 +10,13 @@ manta_install_dir: '/home/murad/Repositories/cancer-sv-pipeline/manta'
 # bam/crams in a directory.
 # 
 # We assume that the index files are located in the same directory.
-tumor_alignments: ''
-normal_alignments: ''
+bam_dir: '/home/msubirana/Documents/phd/sv_prove'
+tumor_dir: '/home/msubirana/Documents/phd/sv_prove'
+normal_dir: '/home/msubirana/Documents/phd/sv_prove'
 
 # path to reference fasta.  We assume the fasta index is
 # located in the same directory.
-reference_genome: ''
-
+reference: '/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
 # path to the base directory for the pipeline outputs.
-output_dir: '/home/murad/Repositories/cancer-sv-pipeline/results'
+outdir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results'
+delly_excl: /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/human.hg38.excl.tsv
