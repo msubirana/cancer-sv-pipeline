@@ -1,0 +1,18 @@
+name: lumpy-sv
+channels:
+  - bioconda
+  - r
+  - defaults
+  - conda-forge
+dependencies:
+  - bcftools
+  - htslib
+  - libdeflate
+  - lumpy-sv
+  - pysam
+  - sambamba
+  - samblaster
+  - samtools
+  - svtyper
+  - cytoolz
+  - r-jsonlite

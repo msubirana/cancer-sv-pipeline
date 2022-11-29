@@ -2,6 +2,8 @@
 # the repository on their system.
 manta_install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
 manta_version: '1.6.0'
+gridss_install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss'
+gridss_version: '2.13.2'
 # for now I've chosen keep tumor and normal bams
 # in separate directories.
 # 

@@ -1,0 +1,17 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - gridss
+  - samtools=1.13
+  - bwa
+  - r-base=4.1.1
+  - r-tidyverse
+  - bioconductor-ggbio
+  # - stringdist
+  # - testthat
+  # - stringr
+  # - StructuralVariantAnnotation
+  # - rtracklayer
+  # - BSgenome.Hsapiens.UCSC.hg38
+

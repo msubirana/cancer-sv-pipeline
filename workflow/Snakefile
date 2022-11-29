@@ -16,7 +16,7 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
-        expand(f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz', sample=samples)
+        expand(f'{config.outdir}/gridss/{{sample}}.vcf', sample=samples)
 
 # ==============================================================================
 # Installation Rules
@@ -25,18 +25,21 @@ rule InstallExcord:
     """
     Pull excord bin from github release
     """
+
 rule InstallGiggle:
     """
     Build giggle from source
     """
+
 rule InstallStix:
     """
     Build stix and dependencies from source (Depends on giggle)
     """
-
+    
 rule InstallDelly:
     """
     Install delly from github"""
+
 rule InstallManta:
     """
     Install manta from github release.
@@ -46,11 +49,26 @@ rule InstallManta:
     output:
         # config is in bin/configManta.py
         installation = f'{config.manta_install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py'
-
     shell:
         """
         {input.script} {config.manta_install_dir} {config.manta_version}
         """
+
+rule InstallGridss:
+    """
+    Install gridss from github release.
+    """
+    input:
+        script = "scripts/install_gridss.sh"
+    output:
+        # config is in bin/configManta.py
+        dependencies = f'{config.gridss_install_dir}/gridss/gridss-{config.gridss_version}-gridss-jar-with-dependencies.jar',
+        exclude_list = f'{config.gridss_install_dir}/gridss/exclude_list.bed'
+    shell:
+        """
+        {input.script} {config.gridss_install_dir} {config.gridss_version}
+        """
+
 
 # ==============================================================================
 # TODO STIX index creation
@@ -72,17 +90,63 @@ rule MakeSTIXIndex:
     """
 
 # ==============================================================================
+# Lumpy Rules
+# ==============================================================================
+rule lumpy_sv:  
+    input:
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
+        reference = f'{config.reference}'
+    output:
+        f'{config.outdir}/lumpy/{{sample}}.vcf',
+    conda:
+        'envs/lumpy.yaml'
+    shell:
+        """
+        set -xe
+
+        lumpyexpress \
+            -B {input.tumor_bam},{input.normal_bam}\
+            -o {output} 
+        """
+
+# ==============================================================================
+# GRIDSS Rules
+# ==============================================================================
+rule gridss:  
+    input:
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
+        reference = f'{config.reference}',
+        exclude_list = f'{rules.InstallGridss.output.exclude_list}',
+        dependencies = f'{rules.InstallGridss.output.dependencies}'
+    output:
+        f'{config.outdir}/gridss/{{sample}}.vcf',
+    conda:
+        'envs/gridss.yaml'
+    shell:
+        """
+        gridss \
+        -r {input.reference} \
+        -j {input.dependencies} \
+        -o {output} \
+        -b {input.exclude_list} \
+        {input.normal_bam} \
+        {input.tumor_bam}
+        """
+
+# ==============================================================================
 # Delly Rules
 # ==============================================================================
 rule delly_bcf:
     input:
         ref = f'{config.reference}',
-        alns = f'{config.bam_dir}/{{sample}}_TI.bam',
+        alns = [f'{config.bam_dir}/{{sample}}_TI.bam', f'{config.bam_dir}/{{sample}}_BL.bam'],
         exclude = f'{config.delly_excl}'
     output:
         f'{config.outdir}/delly/{{sample}}.bcf',
     conda:
-        'envs/callers.yaml'
+        'envs/delly.yaml'
     params:
         uncompressed_bcf=True,
     log:
@@ -90,6 +154,7 @@ rule delly_bcf:
     threads: 2  # It is best to use as many threads as samples
     wrapper:
         "v1.19.2/bio/delly"
+
 
 
 # ==============================================================================
