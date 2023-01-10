@@ -17,7 +17,6 @@ samples = list(set([basename(x).split('_')[0]
 rule All:
     input:
         expand(f'{config.outdir}/gridss/{{sample}}.vcf', sample=samples)
-
 # ==============================================================================
 # Installation Rules
 # ==============================================================================
@@ -62,8 +61,8 @@ rule InstallGridss:
         script = "scripts/install_gridss.sh"
     output:
         # config is in bin/configManta.py
-        dependencies = f'{config.gridss_install_dir}/gridss/gridss-{config.gridss_version}-gridss-jar-with-dependencies.jar',
-        exclude_list = f'{config.gridss_install_dir}/gridss/exclude_list.bed'
+        dependencies = f'{config.gridss_install_dir}/gridss-{config.gridss_version}-gridss-jar-with-dependencies.jar',
+        exclude_list = f'{config.gridss_install_dir}/exclude_list.bed'
     shell:
         """
         {input.script} {config.gridss_install_dir} {config.gridss_version}

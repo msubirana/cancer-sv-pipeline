@@ -1,0 +1,460 @@
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.analysis.CollectGridssMetrics REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa TMP_DIR=./NET25_BL.bam.gridss.working ASSUME_SORTED=true I=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam O=./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam THRESHOLD_COVERAGE=50000 FILE_EXTENSION=null GRIDSS_PROGRAM=null GRIDSS_PROGRAM=CollectIdsvMetrics PROGRAM=null PROGRAM=CollectInsertSizeMetrics STOP_AFTER=10000000"
+	User time (seconds): 41.39
+	System time (seconds): 1.36
+	Percent of CPU this job got: 186%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:22.94
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1033368
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 45
+	Minor (reclaiming a frame) page faults: 279950
+	Voluntary context switches: 75451
+	Involuntary context switches: 3968
+	Swaps: 0
+	File system inputs: 36120
+	File system outputs: 1528
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.CollectGridssMetricsAndExtractSVReads REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa TMP_DIR=./NET25_BL.bam.gridss.working ASSUME_SORTED=true I=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam O=./NET25_BL.bam.gridss.working/NET25_BL.bam THRESHOLD_COVERAGE=50000 FILE_EXTENSION=null GRIDSS_PROGRAM=null GRIDSS_PROGRAM=CollectCigarMetrics GRIDSS_PROGRAM=CollectMapqMetrics GRIDSS_PROGRAM=CollectTagMetrics GRIDSS_PROGRAM=CollectIdsvMetrics GRIDSS_PROGRAM=ReportThresholdCoverage PROGRAM=null PROGRAM=CollectInsertSizeMetrics SV_OUTPUT=/dev/stdout COMPRESSION_LEVEL=0 INSERT_SIZE_METRICS=./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam.insert_size_metrics READ_PAIR_CONCORDANT_PERCENT=0.995 UNMAPPED_READS=false MIN_CLIP_LENGTH=5 INCLUDE_DUPLICATES=true"
+	User time (seconds): 53.20
+	System time (seconds): 1.88
+	Percent of CPU this job got: 137%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:40.04
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1240160
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 29
+	Minor (reclaiming a frame) page faults: 337586
+	Voluntary context switches: 149719
+	Involuntary context switches: 11855
+	Swaps: 0
+	File system inputs: 32608
+	File system outputs: 1712
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools sort -n -T ./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam.namedsorted-tmp -Obam -o ./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam.namedsorted.bam -@ 8 /dev/stdin"
+	User time (seconds): 2.66
+	System time (seconds): 0.10
+	Percent of CPU this job got: 6%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:40.75
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 106940
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 4
+	Minor (reclaiming a frame) page faults: 27411
+	Voluntary context switches: 2628
+	Involuntary context switches: 181
+	Swaps: 0
+	File system inputs: 464
+	File system outputs: 56840
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.PreprocessForBreakendAssembly TMP_DIR=./NET25_BL.bam.gridss.working WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa COMPRESSION_LEVEL=0 I=./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam.namedsorted.bam O=/dev/stdout WORKER_THREADS=8 ALIGNER=BWAMEM ALIGNER_BATCH_SIZE=10000 MODIFICATION_SUMMARY_FILE=./NET25_BL.bam.gridss.working/NET25_BL.bam.computesamtags.changes.tsv"
+	User time (seconds): 63.83
+	System time (seconds): 10.47
+	Percent of CPU this job got: 2%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 50:26.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6856216
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 92134
+	Minor (reclaiming a frame) page faults: 472599
+	Voluntary context switches: 306918
+	Involuntary context switches: 5817
+	Swaps: 0
+	File system inputs: 11431416
+	File system outputs: 5264
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools sort -@ 8 -T ./NET25_BL.bam.gridss.working/tmp.NET25_BL.bam.sc2sr.suppsorted.sv-tmp -Obam -o ./NET25_BL.bam.gridss.working/NET25_BL.bam.sv.tmp.bam /dev/stdin"
+	User time (seconds): 2.21
+	System time (seconds): 0.14
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 50:26.75
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 120524
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 30381
+	Voluntary context switches: 3908
+	Involuntary context switches: 177
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 52704
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools index ./NET25_BL.bam.gridss.working/NET25_BL.bam.sv.tmp.bam"
+	User time (seconds): 0.18
+	System time (seconds): 0.01
+	Percent of CPU this job got: 79%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.24
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6064
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 894
+	Voluntary context switches: 21
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 3256
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.analysis.CollectGridssMetrics REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa TMP_DIR=./NET25_TI.bam.gridss.working ASSUME_SORTED=true I=/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam O=./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam THRESHOLD_COVERAGE=50000 FILE_EXTENSION=null GRIDSS_PROGRAM=null GRIDSS_PROGRAM=CollectIdsvMetrics PROGRAM=null PROGRAM=CollectInsertSizeMetrics STOP_AFTER=10000000"
+	User time (seconds): 55.77
+	System time (seconds): 1.67
+	Percent of CPU this job got: 112%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:51.06
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1308828
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 13
+	Minor (reclaiming a frame) page faults: 347665
+	Voluntary context switches: 136248
+	Involuntary context switches: 5481
+	Swaps: 0
+	File system inputs: 50648
+	File system outputs: 1520
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.CollectGridssMetricsAndExtractSVReads REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa TMP_DIR=./NET25_TI.bam.gridss.working ASSUME_SORTED=true I=/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam O=./NET25_TI.bam.gridss.working/NET25_TI.bam THRESHOLD_COVERAGE=50000 FILE_EXTENSION=null GRIDSS_PROGRAM=null GRIDSS_PROGRAM=CollectCigarMetrics GRIDSS_PROGRAM=CollectMapqMetrics GRIDSS_PROGRAM=CollectTagMetrics GRIDSS_PROGRAM=CollectIdsvMetrics GRIDSS_PROGRAM=ReportThresholdCoverage PROGRAM=null PROGRAM=CollectInsertSizeMetrics SV_OUTPUT=/dev/stdout COMPRESSION_LEVEL=0 INSERT_SIZE_METRICS=./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam.insert_size_metrics READ_PAIR_CONCORDANT_PERCENT=0.995 UNMAPPED_READS=false MIN_CLIP_LENGTH=5 INCLUDE_DUPLICATES=true"
+	User time (seconds): 71.79
+	System time (seconds): 2.48
+	Percent of CPU this job got: 239%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:30.95
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1368248
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 12
+	Minor (reclaiming a frame) page faults: 371023
+	Voluntary context switches: 243550
+	Involuntary context switches: 17879
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1560
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools sort -n -T ./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam.namedsorted-tmp -Obam -o ./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam.namedsorted.bam -@ 8 /dev/stdin"
+	User time (seconds): 5.30
+	System time (seconds): 0.26
+	Percent of CPU this job got: 17%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:32.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 203020
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 52088
+	Voluntary context switches: 4717
+	Involuntary context switches: 248
+	Swaps: 0
+	File system inputs: 8
+	File system outputs: 114520
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.PreprocessForBreakendAssembly TMP_DIR=./NET25_TI.bam.gridss.working WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa COMPRESSION_LEVEL=0 I=./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam.namedsorted.bam O=/dev/stdout WORKER_THREADS=8 ALIGNER=BWAMEM ALIGNER_BATCH_SIZE=10000 MODIFICATION_SUMMARY_FILE=./NET25_TI.bam.gridss.working/NET25_TI.bam.computesamtags.changes.tsv"
+	User time (seconds): 84.39
+	System time (seconds): 3.11
+	Percent of CPU this job got: 32%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:25.30
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 7143212
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3961
+	Minor (reclaiming a frame) page faults: 557786
+	Voluntary context switches: 145080
+	Involuntary context switches: 28704
+	Swaps: 0
+	File system inputs: 984184
+	File system outputs: 3200
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools sort -@ 8 -T ./NET25_TI.bam.gridss.working/tmp.NET25_TI.bam.sc2sr.suppsorted.sv-tmp -Obam -o ./NET25_TI.bam.gridss.working/NET25_TI.bam.sv.tmp.bam /dev/stdin"
+	User time (seconds): 4.31
+	System time (seconds): 0.31
+	Percent of CPU this job got: 1%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 4:26.38
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 232648
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 59275
+	Voluntary context switches: 7439
+	Involuntary context switches: 360
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 102896
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools index ./NET25_TI.bam.gridss.working/NET25_TI.bam.sv.tmp.bam"
+	User time (seconds): 0.36
+	System time (seconds): 0.01
+	Percent of CPU this job got: 72%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.51
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6904
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 6
+	Minor (reclaiming a frame) page faults: 1061
+	Voluntary context switches: 24
+	Involuntary context switches: 1
+	Swaps: 0
+	File system inputs: 712
+	File system outputs: 3720
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx30g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -Dgridss.output_to_temp_file=true -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.AssembleBreakends JOB_INDEX=0 JOB_NODES=1 TMP_DIR=. WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa WORKER_THREADS=8 INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam BLACKLIST=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/exclude_list.bed READ_PAIR_CONCORDANT_PERCENT=0.995 O=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf.assembly.bam"
+	User time (seconds): 270.86
+	System time (seconds): 17.81
+	Percent of CPU this job got: 46%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 10:21.50
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 12932952
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 162
+	Minor (reclaiming a frame) page faults: 3258996
+	Voluntary context switches: 571024
+	Involuntary context switches: 79822
+	Swaps: 0
+	File system inputs: 2429928
+	File system outputs: 42256
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.analysis.CollectGridssMetrics I=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf.assembly.bam O=./NET25.vcf.assembly.bam.gridss.working//NET25.vcf.assembly.bam REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa THRESHOLD_COVERAGE=50000 TMP_DIR=. FILE_EXTENSION=null GRIDSS_PROGRAM=null GRIDSS_PROGRAM=CollectCigarMetrics GRIDSS_PROGRAM=CollectMapqMetrics GRIDSS_PROGRAM=CollectTagMetrics GRIDSS_PROGRAM=CollectIdsvMetrics GRIDSS_PROGRAM=ReportThresholdCoverage PROGRAM=null PROGRAM=QualityScoreDistribution"
+	User time (seconds): 16.17
+	System time (seconds): 1.41
+	Percent of CPU this job got: 17%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:42.02
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1561968
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 76
+	Minor (reclaiming a frame) page faults: 407715
+	Voluntary context switches: 11906
+	Involuntary context switches: 677
+	Swaps: 0
+	File system inputs: 366992
+	File system outputs: 1680
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -Dgridss.async.buffersize=16 -Dsamjdk.create_index=false -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.SoftClipsToSplitReads TMP_DIR=./NET25.vcf.assembly.bam.gridss.working/ WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa WORKER_THREADS=8 I=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf.assembly.bam O=/dev/stdout ALIGNER=BWAMEM ALIGNER_BATCH_SIZE=100000 REALIGN_ENTIRE_READ=true READJUST_PRIMARY_ALIGNMENT_POSITION=true COMPRESSION_LEVEL=0"
+	User time (seconds): 46.68
+	System time (seconds): 9.62
+	Percent of CPU this job got: 2%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 45:39.37
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 6699824
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 85920
+	Minor (reclaiming a frame) page faults: 424957
+	Voluntary context switches: 233654
+	Involuntary context switches: 1217
+	Swaps: 0
+	File system inputs: 10489416
+	File system outputs: 5000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools sort -@ 8 -T ./NET25.vcf.assembly.bam.gridss.working//tmp.NET25.vcf.assembly.bam.sc2sr.suppsorted.sv-tmp -Obam -o ./NET25.vcf.assembly.bam.gridss.working//NET25.vcf.assembly.bam.sv.tmp.bam /dev/stdin"
+	User time (seconds): 0.29
+	System time (seconds): 0.05
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 45:39.50
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 23276
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 5140
+	Voluntary context switches: 664
+	Involuntary context switches: 3
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8568
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "samtools index ./NET25.vcf.assembly.bam.gridss.working//NET25.vcf.assembly.bam.sv.tmp.bam"
+	User time (seconds): 0.04
+	System time (seconds): 0.00
+	Percent of CPU this job got: 55%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.08
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 5492
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 705
+	Voluntary context switches: 11
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 2664
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx30g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -Dgridss.output_to_temp_file=true -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.IdentifyVariants TMP_DIR=. WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa WORKER_THREADS=8 INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam BLACKLIST=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/exclude_list.bed ASSEMBLY=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf.assembly.bam OUTPUT_VCF=./NET25.vcf.gridss.working/NET25.vcf.unallocated.vcf READ_PAIR_CONCORDANT_PERCENT=0.995"
+	User time (seconds): 102.61
+	System time (seconds): 12.62
+	Percent of CPU this job got: 21%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 9:08.19
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 12551928
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 76
+	Minor (reclaiming a frame) page faults: 3177455
+	Voluntary context switches: 388167
+	Involuntary context switches: 44270
+	Swaps: 0
+	File system inputs: 2273736
+	File system outputs: 34384
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx30g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -Dgridss.output_to_temp_file=true -Dgridss.async.buffersize=2048 -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.AnnotateVariants TMP_DIR=. WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa WORKER_THREADS=8 INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam INPUT=/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam BLACKLIST=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/exclude_list.bed ASSEMBLY=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf.assembly.bam INPUT_VCF=./NET25.vcf.gridss.working/NET25.vcf.unallocated.vcf OUTPUT_VCF=./NET25.vcf.gridss.working/NET25.vcf.allocated.vcf READ_PAIR_CONCORDANT_PERCENT=0.995"
+	User time (seconds): 102.06
+	System time (seconds): 6.84
+	Percent of CPU this job got: 817%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.32
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 12125168
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 8
+	Minor (reclaiming a frame) page faults: 3073660
+	Voluntary context switches: 195502
+	Involuntary context switches: 32933
+	Swaps: 0
+	File system inputs: 752
+	File system outputs: 8920
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+	Command being timed: "java -Xmx4g -Dsamjdk.reference_fasta=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -Dsamjdk.use_async_io_read_samtools=true -Dsamjdk.use_async_io_write_samtools=true -Dsamjdk.use_async_io_write_tribble=true -Dsamjdk.buffer_size=4194304 -Dsamjdk.async_io_read_threads=8 -Dgridss.output_to_temp_file=true -cp /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss/gridss-2.13.2-gridss-jar-with-dependencies.jar gridss.AnnotateInsertedSequence TMP_DIR=. WORKING_DIR=. REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa WORKER_THREADS=8 INPUT=./NET25.vcf.gridss.working/NET25.vcf.allocated.vcf OUTPUT=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/gridss/NET25.vcf"
+	User time (seconds): 10.24
+	System time (seconds): 9.45
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 43:49.64
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 5313476
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 139
+	Minor (reclaiming a frame) page faults: 1433860
+	Voluntary context switches: 163238
+	Involuntary context switches: 265
+	Swaps: 0
+	File system inputs: 10596656
+	File system outputs: 9840
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
