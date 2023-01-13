@@ -16,7 +16,8 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
-        expand(f'{config.outdir}/gridss/{{sample}}.vcf', sample=samples)
+        expand(f'{config.outdir}/gridss/{{sample}}.vcf', sample=samples),
+        
 # ==============================================================================
 # Installation Rules
 # ==============================================================================
@@ -53,6 +54,7 @@ rule InstallManta:
         {input.script} {config.manta_install_dir} {config.manta_version}
         """
 
+# comment? is in conda?
 rule InstallGridss:
     """
     Install gridss from github release.
@@ -91,6 +93,8 @@ rule MakeSTIXIndex:
 # ==============================================================================
 # Lumpy Rules
 # ==============================================================================
+# remove this rule and replace with smooth 
+# two rules one for tumor and the other ctrl for paried calling (rm germline)
 rule lumpy_sv:  
     input:
         tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
@@ -124,6 +128,7 @@ rule gridss:
     conda:
         'envs/gridss.yaml'
     shell:
+    # put the exclud in the config file 
         """
         gridss \
         -r {input.reference} \
