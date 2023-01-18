@@ -18,7 +18,8 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
-        expand(f'{config.outdir}/manta/{{sample}}.vcf', sample=samples)
+        expand(f'{config.outdir}/manta/{{sample}}.vcf', sample=samples),
+        expand(f'{config.outdir}/delly/{{sample}}.vcf', sample=samples)
         
 # ==============================================================================
 # Installation Rules
@@ -159,7 +160,20 @@ rule delly_bcf:
     wrapper:
         "v1.19.2/bio/delly"
 
-
+rule filterDelly:
+    """
+    Filter PASS variants Delly
+    """
+    input:
+        input_vcf = f'{config.outdir}/delly/{{sample}}.bcf',
+    output:
+        f'{config.outdir}/delly/{{sample}}.vcf',
+    conda:
+        'envs/post_processing.yaml'
+    shell:
+        """
+        scripts/bcftools_filter.sh {input.input_vcf} {output}
+        """
 
 # ==============================================================================
 # MANTA Rules
@@ -203,7 +217,6 @@ rule RunManta:
 rule filterManta:
     """
     Filter PASS variants manta
-
     """
     input:
         input_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
