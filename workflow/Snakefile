@@ -4,6 +4,8 @@ from types import SimpleNamespace
 import os
 configfile: 'conf/config.yaml'
 
+# how to snakemake -j 1  --use-conda with mamba
+
 # This allows for dot (.) access instead of dict access
 # of configuration parameters.
 # EXAMPLE: config['ABC'] becomes config.ABC
@@ -16,7 +18,7 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
-        expand(f'{config.outdir}/gridss/{{sample}}.vcf', sample=samples),
+        expand(f'{config.outdir}/manta/{{sample}}.vcf', sample=samples)
         
 # ==============================================================================
 # Installation Rules
@@ -54,7 +56,7 @@ rule InstallManta:
         {input.script} {config.manta_install_dir} {config.manta_version}
         """
 
-# comment? is in conda?
+# adds dependencies and exclude file
 rule InstallGridss:
     """
     Install gridss from github release.
@@ -62,9 +64,8 @@ rule InstallGridss:
     input:
         script = "scripts/install_gridss.sh"
     output:
-        # config is in bin/configManta.py
         dependencies = f'{config.gridss_install_dir}/gridss-{config.gridss_version}-gridss-jar-with-dependencies.jar',
-        exclude_list = f'{config.gridss_install_dir}/exclude_list.bed'
+        exclude_list = f'{config.gridss_install_dir}/exclude_list.bed' # exclude is download as well
     shell:
         """
         {input.script} {config.gridss_install_dir} {config.gridss_version}
@@ -128,16 +129,15 @@ rule gridss:
     conda:
         'envs/gridss.yaml'
     shell:
-    # put the exclud in the config file 
         """
-        gridss \
-        -r {input.reference} \
-        -j {input.dependencies} \
-        -o {output} \
-        -b {input.exclude_list} \
-        {input.normal_bam} \
-        {input.tumor_bam}
+        scripts/gridss.sh {input.reference} \
+                {input.dependencies} \
+                {output} \
+                {input.exclude_list} \ 
+                {input.normal_bam} \
+                {input.tumor_bam}
         """
+
 
 # ==============================================================================
 # Delly Rules
@@ -180,13 +180,13 @@ rule ConfigManta:
         runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py'
     shell:
         """
-        {input.configManta} \
-        --tumorBam       {input.tumor_bam} \
-        --normalBam      {input.normal_bam} \
-        --referenceFasta {input.reference} \
-        --runDir         {params.rundir} 
+        scripts/conf_manta.sh {input.configManta} \
+                    {input.tumor_bam} \
+                    {input.normal_bam} \
+                    {input.reference} \
+                    {params.rundir} 
         """
-
+        
 rule RunManta:
     """
     Run manta
@@ -197,13 +197,24 @@ rule RunManta:
         manta_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz'
     shell:
         """
-        {input.rundir} \
-        -m local \
-        -j {threads} \
-        --quiet
+        scripts/run_manta.sh {input.rundir} {threads}
         """
 
+rule filterManta:
+    """
+    Filter PASS variants manta
 
+    """
+    input:
+        input_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
+    output:
+        f'{config.outdir}/manta/{{sample}}.vcf',
+    conda:
+        'envs/post_processing.yaml'
+    shell:
+        """
+        scripts/bcftools_filter.sh {input.input_vcf} {output}
+        """
 
 # ==============================================================================
 # TODO Smoove (lumpy/SVTYPER) rules
