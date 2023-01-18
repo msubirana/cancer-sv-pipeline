@@ -18,8 +18,9 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
-        expand(f'{config.outdir}/manta/{{sample}}.vcf', sample=samples),
-        expand(f'{config.outdir}/delly/{{sample}}.vcf', sample=samples)
+        expand(f'{config.outdir}/manta/{{sample}}_pass.vcf', sample=samples),
+        expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
+        expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples)
         
 # ==============================================================================
 # Installation Rules
@@ -139,6 +140,20 @@ rule gridss:
                 {input.tumor_bam}
         """
 
+rule filterGridss:
+    """
+    Filter PASS variants Delly
+    """
+    input:
+        input_vcf = f'{config.outdir}/gridss/{{sample}}.vcf',
+    output:
+        f'{config.outdir}/gridss/{{sample}}_pass.vcf',
+    conda:
+        'envs/post_processing.yaml'
+    shell:
+        """
+        scripts/bcftools_filter_gridss.sh {input.input_vcf} {output}
+        """
 
 # ==============================================================================
 # Delly Rules
@@ -167,7 +182,7 @@ rule filterDelly:
     input:
         input_vcf = f'{config.outdir}/delly/{{sample}}.bcf',
     output:
-        f'{config.outdir}/delly/{{sample}}.vcf',
+        f'{config.outdir}/delly/{{sample}}_pass.vcf',
     conda:
         'envs/post_processing.yaml'
     shell:
@@ -221,7 +236,7 @@ rule filterManta:
     input:
         input_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
     output:
-        f'{config.outdir}/manta/{{sample}}.vcf',
+        f'{config.outdir}/manta/{{sample}}_pass.vcf',
     conda:
         'envs/post_processing.yaml'
     shell:
