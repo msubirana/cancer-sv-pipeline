@@ -1,9 +1,10 @@
 # TODO leave blank and let user fill out once they've cloned
 # the repository on their system.
-manta_install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
+
+# manta install setup
+install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
 manta_version: '1.6.0'
-gridss_install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir/gridss'
-gridss_version: '2.13.2'
+excord_version: '0.2.4'
 # for now I've chosen keep tumor and normal bams
 # in separate directories.
 # 
@@ -21,4 +22,6 @@ normal_dir: '/home/msubirana/Documents/phd/sv_prove'
 reference: '/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
 # path to the base directory for the pipeline outputs.
 outdir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results'
-delly_excl: /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/human.hg38.excl.tsv
+
+# path to exclude bed regions
+exclude_bed: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed'

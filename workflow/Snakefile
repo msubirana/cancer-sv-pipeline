@@ -2,10 +2,25 @@ from os.path import basename
 from glob import glob
 from types import SimpleNamespace
 import os
+import utils
+
 configfile: 'conf/config.yaml'
 
 # how to snakemake -j 1  --use-conda with mamba
-
+# to do define threads gridss?
+# conda for smoove 
+# duphold (annotate vcf with values for del and dup log2 region and flanking filter del) all sv callers
+# annotation gridss to del, dup...
+# test individually 
+# filter duphold 
+# stix filtering reduce sizes vcf 
+# survivor faster!
+# excore like bam files sv evidence (paral) 
+# giggle from source c++ snakemake rule output is a bin 
+# create giggle index one for all tumors and all ctrl backbound of stix index (1st 2 bams)
+# stix install from source
+# stix index faster than giggle
+# create hg38 1000g index for stix (crams) 3 bams excord high cov
 # This allows for dot (.) access instead of dict access
 # of configuration parameters.
 # EXAMPLE: config['ABC'] becomes config.ABC
@@ -20,7 +35,9 @@ rule All:
     input:
         expand(f'{config.outdir}/manta/{{sample}}_pass.vcf', sample=samples),
         expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
-        expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples)
+        expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples), 
+        expand(f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz', sample=samples),
+        f'{config.install_dir}/excord'
         
 # ==============================================================================
 # Installation Rules
@@ -29,7 +46,14 @@ rule InstallExcord:
     """
     Pull excord bin from github release
     """
-
+    input:
+        script = "scripts/install_excord.sh",
+    output:
+        binary_excord = f'{config.install_dir}/excord',
+    shell:
+        """
+        {input.script} {config.install_dir} {config.excord_version}
+        """
 rule InstallGiggle:
     """
     Build giggle from source
@@ -40,39 +64,19 @@ rule InstallStix:
     Build stix and dependencies from source (Depends on giggle)
     """
     
-rule InstallDelly:
-    """
-    Install delly from github"""
-
 rule InstallManta:
     """
     Install manta from github release.
     """
     input:
-        script = "scripts/install_manta.sh"
+        script = "scripts/install_manta.sh",
     output:
         # config is in bin/configManta.py
-        installation = f'{config.manta_install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py'
+        installation = f'{config.install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py',
     shell:
         """
-        {input.script} {config.manta_install_dir} {config.manta_version}
+        {input.script} {config.install_dir} {config.manta_version}
         """
-
-# adds dependencies and exclude file
-rule InstallGridss:
-    """
-    Install gridss from github release.
-    """
-    input:
-        script = "scripts/install_gridss.sh"
-    output:
-        dependencies = f'{config.gridss_install_dir}/gridss-{config.gridss_version}-gridss-jar-with-dependencies.jar',
-        exclude_list = f'{config.gridss_install_dir}/exclude_list.bed' # exclude is download as well
-    shell:
-        """
-        {input.script} {config.gridss_install_dir} {config.gridss_version}
-        """
-
 
 # ==============================================================================
 # TODO STIX index creation
@@ -94,66 +98,63 @@ rule MakeSTIXIndex:
     """
 
 # ==============================================================================
-# Lumpy Rules
-# ==============================================================================
-# remove this rule and replace with smooth 
-# two rules one for tumor and the other ctrl for paried calling (rm germline)
-rule lumpy_sv:  
-    input:
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
-        reference = f'{config.reference}'
-    output:
-        f'{config.outdir}/lumpy/{{sample}}.vcf',
-    conda:
-        'envs/lumpy.yaml'
-    shell:
-        """
-        set -xe
-
-        lumpyexpress \
-            -B {input.tumor_bam},{input.normal_bam}\
-            -o {output} 
-        """
-
-# ==============================================================================
 # GRIDSS Rules
 # ==============================================================================
 rule gridss:  
     input:
+        script = 'scripts/gridss.sh',
         tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
         normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
         reference = f'{config.reference}',
-        exclude_list = f'{rules.InstallGridss.output.exclude_list}',
-        dependencies = f'{rules.InstallGridss.output.dependencies}'
+        exclude = f'{config.exclude_bed}',
     output:
         f'{config.outdir}/gridss/{{sample}}.vcf',
+    log:
+        f'logs/gridss_{{sample}}.log',
     conda:
-        'envs/gridss.yaml'
+        'envs/gridss.yaml',
     shell:
         """
-        scripts/gridss.sh {input.reference} \
-                {input.dependencies} \
-                {output} \
-                {input.exclude_list} \ 
-                {input.normal_bam} \
-                {input.tumor_bam}
+        {input.script} {input.reference} {output} {input.exclude} {input.normal_bam} {input.tumor_bam}
+        """
+
+rule annotatedGridss:
+    """
+    Filter PASS variants Gridss
+    """
+    input:
+        script = 'scripts/sv_type_infer_gridss.R',
+        input_vcf = f'{rules.gridss.output}',
+    output:
+        f'{config.outdir}/gridss/{{sample}}_ann.vcf',
+    log:
+        f'logs/annotatedGridss{{sample}}.log',    
+    conda:
+        'envs/gridss.yaml',
+    shell:
+        """
+        Rscript {input.script} {input.input_vcf} {output}
         """
 
 rule filterGridss:
     """
-    Filter PASS variants Delly
+    Filter PASS variants Gridss
     """
     input:
-        input_vcf = f'{config.outdir}/gridss/{{sample}}.vcf',
+        script = 'scripts/bcftools_filter.sh',
+        input_vcf = f'{rules.annotatedGridss.output}',
     output:
         f'{config.outdir}/gridss/{{sample}}_pass.vcf',
+    log:
+        f'logs/filterGridss_{{sample}}.log',    
     conda:
-        'envs/post_processing.yaml'
+        'envs/post_processing.yaml',
     shell:
         """
-        scripts/bcftools_filter_gridss.sh {input.input_vcf} {output}
+        {input.script} {input.input_vcf} {output}
         """
+
+
 
 # ==============================================================================
 # Delly Rules
@@ -162,15 +163,15 @@ rule delly_bcf:
     input:
         ref = f'{config.reference}',
         alns = [f'{config.bam_dir}/{{sample}}_TI.bam', f'{config.bam_dir}/{{sample}}_BL.bam'],
-        exclude = f'{config.delly_excl}'
+        exclude = f'{config.exclude_bed}',
     output:
         f'{config.outdir}/delly/{{sample}}.bcf',
     conda:
-        'envs/delly.yaml'
+        'envs/delly.yaml',
     params:
         uncompressed_bcf=True,
     log:
-        f'{config.outdir}/delly/logs/{{sample}}_delly.log',
+        f'logs/delly_bcf_{{sample}}.log',   
     threads: 2  # It is best to use as many threads as samples
     wrapper:
         "v1.19.2/bio/delly"
@@ -180,14 +181,17 @@ rule filterDelly:
     Filter PASS variants Delly
     """
     input:
-        input_vcf = f'{config.outdir}/delly/{{sample}}.bcf',
+        script = 'scripts/bcftools_filter.sh',
+        input_vcf = f'{rules.delly_bcf.output}',
     output:
         f'{config.outdir}/delly/{{sample}}_pass.vcf',
+    log:
+        f'logs/filterDelly_{{sample}}.log',   
     conda:
-        'envs/post_processing.yaml'
+        'envs/post_processing.yaml',
     shell:
         """
-        scripts/bcftools_filter.sh {input.input_vcf} {output}
+        {input.script} {input.input_vcf} {output}
         """
 
 # ==============================================================================
@@ -199,17 +203,20 @@ rule ConfigManta:
     Configure the manta calling workflow
     """
     input:
+        script = 'scripts/conf_manta.sh',
         configManta = f'{rules.InstallManta.output.installation}',
         tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
         normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
-        reference = f'{config.reference}'
+        reference = f'{config.reference}',
     params:
-        rundir = f'{config.outdir}/manta/{{sample}}_manta'
+        rundir = f'{config.outdir}/manta/{{sample}}_manta',
     output:
-        runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py'
+        runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py',
+    log:
+        f'logs/ConfigManta_{{sample}}.log',
     shell:
         """
-        scripts/conf_manta.sh {input.configManta} \
+        {input.script} {input.configManta} \
                     {input.tumor_bam} \
                     {input.normal_bam} \
                     {input.reference} \
@@ -221,12 +228,15 @@ rule RunManta:
     Run manta
     """
     input:
-        rundir = f'{rules.ConfigManta.output.runPy}'
+        script = 'scripts/run_manta.sh',
+        rundir = f'{rules.ConfigManta.output.runPy}',
     output: 
-        manta_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz'
+        f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
+    log:
+        f'logs/RunManta_{{sample}}.log',
     shell:
         """
-        scripts/run_manta.sh {input.rundir} {threads}
+        {input.script} {input.rundir} {threads}
         """
 
 rule filterManta:
@@ -234,14 +244,17 @@ rule filterManta:
     Filter PASS variants manta
     """
     input:
-        input_vcf = f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
+        script = 'scripts/bcftools_filter.sh',
+        input_vcf = rules.RunManta.output,
     output:
         f'{config.outdir}/manta/{{sample}}_pass.vcf',
+    log:
+        f'logs/filterManta_{{sample}}.log',
     conda:
-        'envs/post_processing.yaml'
+        'envs/post_processing.yaml',
     shell:
         """
-        scripts/bcftools_filter.sh {input.input_vcf} {output}
+        {input.script} {input.input_vcf} {output}
         """
 
 # ==============================================================================
@@ -250,6 +263,42 @@ rule filterManta:
 # with STIX to get rid of germline variants
 # ==============================================================================
 
+rule smoove_call:
+    input:
+        script = 'scripts/smoove_call.sh',
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        exclude = f'{config.exclude_bed}', 
+        reference = f'{config.reference}',
+    output:
+        f'{config.outdir}/smoove/called/{{sample}}-smoove.genotyped.vcf.gz',
+    params:
+        output_dir = f'{config.outdir}/smoove/called',
+    log:
+        f'logs/smoove_call_{{sample}}.log',
+    conda:
+        'envs/smoove.yaml',
+    shell:
+        """
+        {input.script} {params.output_dir} {input.exclude} {wildcards.sample} {input.reference} {input.tumor_bam}
+        """
+rule smoove_genotype:
+    input: 
+        script = 'scripts/smoove_genotype.sh',
+        vcf = rules.smoove_call.output,
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        reference = f'{config.reference}',
+    output:
+        f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz',
+    log:
+        f'logs/smoove_genotype_{{sample}}.log',
+    params:
+        output_dir = f'{config.outdir}/smoove/genotyped',
+    conda:
+        'envs/smoove.yaml',
+    shell: 
+        """
+        {input.script} {wildcards.sample} {params.output_dir} {input.reference} {input.vcf} {input.tumor_bam}
+        """
 # ==============================================================================
 # TODO STIX filtering for germline SV callers
 # ==============================================================================

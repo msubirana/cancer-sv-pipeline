@@ -1,0 +1,145 @@
+Tue Jan 24 22:01:32 CET 2023: Full log file is: /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/gridss.full.20230124_220132.msg.243472.log
+Tue Jan 24 22:01:32 CET 2023: Found /usr/bin/time
+Tue Jan 24 22:01:32 CET 2023: Using GRIDSS jar /home/msubirana/miniconda3/envs/gridss/share/gridss-2.11.1-1/gridss.jar
+Tue Jan 24 22:01:32 CET 2023: Using reference genome "/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa"
+Tue Jan 24 22:01:32 CET 2023: Using output VCF /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed
+Tue Jan 24 22:01:32 CET 2023: Using assembly bam /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed.assembly.bam
+Tue Jan 24 22:01:32 CET 2023: Using 8 worker threads.
+Tue Jan 24 22:01:32 CET 2023: Using blacklist /home/msubirana/Documents/phd/sv_prove/NET25_BL.bam
+Tue Jan 24 22:01:32 CET 2023: Using JVM maximum heap size of 30g for assembly and variant calling.
+Tue Jan 24 22:01:32 CET 2023: Using input file /home/msubirana/Documents/phd/sv_prove/NET25_TI.bam
+Tue Jan 24 22:01:32 CET 2023: Found /home/msubirana/miniconda3/envs/gridss/bin/Rscript
+Tue Jan 24 22:01:33 CET 2023: Found /home/msubirana/miniconda3/envs/gridss/bin/samtools
+Tue Jan 24 22:01:33 CET 2023: Found /home/msubirana/miniconda3/envs/gridss/bin/java
+Tue Jan 24 22:01:33 CET 2023: Found /home/msubirana/miniconda3/envs/gridss/bin/bwa
+Tue Jan 24 22:01:33 CET 2023: samtools version: 1.13+htslib-1.13
+Tue Jan 24 22:01:33 CET 2023: R version: R scripting front-end version 4.1.1 (2021-08-10)
+Tue Jan 24 22:01:33 CET 2023: bwa Version: 0.7.17-r1188
+Tue Jan 24 22:01:33 CET 2023: time version: GNU time 1.7
+Tue Jan 24 22:01:33 CET 2023: bash version: GNU bash, version 5.0.17(1)-release (x86_64-pc-linux-gnu)
+Tue Jan 24 22:01:33 CET 2023: java version: openjdk version "11.0.1" 2018-10-16 LTS	OpenJDK Runtime Environment Zulu11.2+3 (build 11.0.1+13-LTS)	OpenJDK 64-Bit Server VM Zulu11.2+3 (build 11.0.1+13-LTS, mixed mode)	
+Tue Jan 24 22:01:34 CET 2023: Max file handles: 1048576
+Tue Jan 24 22:01:34 CET 2023: Running GRIDSS steps: setupreference, preprocess, assemble, call,
+Tue Jan 24 22:01:34 CET 2023: Start pre-processing	/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam
+Tue Jan 24 22:01:34 CET 2023: Skipping pre-processing as /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/NET25_TI.bam.gridss.working/NET25_TI.bam.sv.bam already exists. /home/msubirana/Documents/phd/sv_prove/NET25_TI.bam
+Tue Jan 24 22:01:34 CET 2023: Start assembly	/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed.assembly.bam
+Tue Jan 24 22:01:34 CET 2023: Running	AssembleBreakends	/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed.assembly.bam	job 0	total jobs 1
+INFO	2023-01-24 22:01:34	Defaults	Found file for property samjdk.reference_fasta: /mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa 
+INFO	2023-01-24 22:01:34	AssembleBreakends	
+
+********** NOTE: Picard's command line syntax is changing.
+**********
+********** For more information, please see:
+********** https://github.com/broadinstitute/picard/wiki/Command-Line-Syntax-Transition-For-Users-(Pre-Transition)
+**********
+********** The command line looks like this in the new syntax:
+**********
+**********    AssembleBreakends -JOB_INDEX 0 -JOB_NODES 1 -TMP_DIR /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data -WORKING_DIR /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data -REFERENCE_SEQUENCE /mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -WORKER_THREADS 8 -INPUT /home/msubirana/Documents/phd/sv_prove/NET25_TI.bam -BLACKLIST /home/msubirana/Documents/phd/sv_prove/NET25_BL.bam -READ_PAIR_CONCORDANT_PERCENT 0.995 -O /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed.assembly.bam
+**********
+
+
+22:01:35.449 INFO  NativeLibraryLoader - Loading libgkl_compression.so from jar:file:/home/msubirana/miniconda3/envs/gridss/share/gridss-2.11.1-1/gridss.jar!/com/intel/gkl/native/libgkl_compression.so
+[Tue Jan 24 22:01:35 CET 2023] AssembleBreakends OUTPUT=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed.assembly.bam JOB_INDEX=0 JOB_NODES=1 INPUT=[/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam] READ_PAIR_CONCORDANT_PERCENT=0.995 BLACKLIST=/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam WORKER_THREADS=8 WORKING_DIR=/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data TMP_DIR=[/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data] REFERENCE_SEQUENCE=/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa    IGNORE_DUPLICATES=true VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+[Tue Jan 24 22:01:35 CET 2023] Executing as msubirana@msg on Linux 5.14.0-1056-oem amd64; OpenJDK 64-Bit Server VM 11.0.1+13-LTS; Deflater: Intel; Inflater: Intel; Provider GCS is not available; Picard version: 2.11.1-gridss
+INFO	2023-01-24 22:01:35	GridssConfiguration	maxCoverage=25000
+INFO	2023-01-24 22:01:35	GridssConfiguration	minMapq=20
+INFO	2023-01-24 22:01:35	GridssConfiguration	fallbackMapq=20
+INFO	2023-01-24 22:01:35	GridssConfiguration	fallbackBaseq=20
+INFO	2023-01-24 22:01:35	GridssConfiguration	minAnchorShannonEntropy=0.5
+INFO	2023-01-24 22:01:35	GridssConfiguration	dovetailMargin=4
+INFO	2023-01-24 22:01:35	GridssConfiguration	softclip.minAverageQual=5.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	softclip.minLength=5
+INFO	2023-01-24 22:01:35	GridssConfiguration	softclip.minAnchorIdentity=0.95
+INFO	2023-01-24 22:01:35	GridssConfiguration	softclip.realignSplitReads=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	useReadGroupSampleNameCategoryLabel=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	chunkSize=10000000
+INFO	2023-01-24 22:01:35	GridssConfiguration	chunkSequenceChangePenalty=250000
+INFO	2023-01-24 22:01:35	GridssConfiguration	hashEvidenceID=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	adapter=AGATCGGAAGAG
+INFO	2023-01-24 22:01:35	GridssConfiguration	adapter=ATGGAATTCTCG
+INFO	2023-01-24 22:01:35	GridssConfiguration	adapter=CTGTCTCTTATA
+INFO	2023-01-24 22:01:35	GridssConfiguration	scoring.model=FastEmpiricalReferenceLikelihood
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.k=25
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.minReads=3
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.includePairAnchors=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.pairAnchorMismatchIgnoreEndBases=5
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.writeFiltered=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.anchorLength=300
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.removeMisassembledPartialContigsDuringAssembly=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.maxExpectedBreakendLengthMultiple=1.5
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.errorCorrection.kmerErrorCorrectionMultiple=10.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.errorCorrection.k=21
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.realignContigs=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.recoverAfterError=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.downsample.acceptDensityPortion=0.1
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.downsample.targetEvidenceDensity=1
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.downsample.minimumDensityWindowSize=1000
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.downsample.densityDownsampleRateClippedReads=0.9
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.downsample.densityDownsampleRateDiscordantReads=0.75
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.maxPathLengthMultiple=1.1
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.retainWidthMultiple=2.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.flushWidthMultiple=1.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.maximumNodeDensity=2.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.trimSelfIntersectingReads=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.forceFullMemoizationRecalculationAt=0.8
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.safetyModePathCountThreshold=50000
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.positional.safetyModeContigsToCall=3
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.contigNamePrefix=asm%d-
+INFO	2023-01-24 22:01:35	GridssConfiguration	assembly.longReadReadLengthThreshold=1000
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.minReads=2
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.minScore=50.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.minSize=10
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.callUnassembledBreakpoints=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.callUnassembledBreakends=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.callFullyAnchoredAssemblyVariants=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.breakendMargin=10
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.writeFiltered=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.simplecalls=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.maxBreakendHomologyLength=300
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.breakendHomologyAlignmentMargin=10
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.requireAssemblyCategorySupport=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.callBreakends=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.includeSupportingReadNames=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.breakpointLowQuality=500.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.breakendLowQuality=1500.0
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.breakendMaxAssemblySupportBias=0.5
+INFO	2023-01-24 22:01:35	GridssConfiguration	variantcalling.ignoreMissingAssemblyFile=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	terminateOnFirstError=true
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.directory=visualisation
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.buffers=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.bufferTrackingItervalInSeconds=60
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.timeouts=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.evidenceAllocation=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.assemblyProgress=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.assemblyTelemetry=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.maxCliqueTelemetry=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.assemblyGraph=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.assemblyGraphFullSize=false
+INFO	2023-01-24 22:01:35	GridssConfiguration	visualisation.assemblyContigMemoization=false
+INFO	2023-01-24 22:01:35	TwoBitBufferedReferenceSequenceFile	Loading reference genome from cache /mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa.gridsscache
+ERROR	2023-01-24 22:01:35	TwoBitBufferedReferenceSequenceFile	Error loading reference genome from cache /mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa.gridsscachejava.io.InvalidClassException: au.edu.wehi.idsv.debruijn.PackedSequence; local class incompatible: stream classdesc serialVersionUID = 2514579339688635118, local class serialVersionUID = 8268042369116844383
+INFO	2023-01-24 22:01:35	TwoBitBufferedReferenceSequenceFile	Loading reference genome complete
+[Tue Jan 24 22:01:35 CET 2023] gridss.AssembleBreakends done. Elapsed time: 0.01 minutes.
+Runtime.totalMemory()=524288000
+Exception in thread "main" htsjdk.tribble.TribbleException$MalformedFeatureFile: Error parsing LineIteratorImpl(SynchronousLineReader) at the first record, for input source: /home/msubirana/Documents/phd/sv_prove/NET25_BL.bam
+	at htsjdk.tribble.TribbleIndexedFeatureReader$WFIterator.readNextRecord(TribbleIndexedFeatureReader.java:396)
+	at htsjdk.tribble.TribbleIndexedFeatureReader$WFIterator.<init>(TribbleIndexedFeatureReader.java:342)
+	at htsjdk.tribble.TribbleIndexedFeatureReader.iterator(TribbleIndexedFeatureReader.java:309)
+	at au.edu.wehi.idsv.bed.IntervalBed.toRangeSet(IntervalBed.java:62)
+	at au.edu.wehi.idsv.bed.IntervalBed.<init>(IntervalBed.java:34)
+	at au.edu.wehi.idsv.GenomicProcessingContext.setBlacklist(GenomicProcessingContext.java:306)
+	at gridss.cmdline.MultipleSamFileCommandLineProgram.getContext(MultipleSamFileCommandLineProgram.java:199)
+	at gridss.cmdline.MultipleSamFileCommandLineProgram.doWork(MultipleSamFileCommandLineProgram.java:153)
+	at picard.cmdline.CommandLineProgram.instanceMain(CommandLineProgram.java:305)
+	at gridss.AssembleBreakends.main(AssembleBreakends.java:35)
+Caused by: java.lang.NumberFormatException: For input string: "??1?Q???$?`??`?????w???&??&???w????9s??3??M"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.base/java.lang.Integer.parseInt(Integer.java:652)
+	at java.base/java.lang.Integer.parseInt(Integer.java:770)
+	at htsjdk.tribble.bed.BEDCodec.decode(BEDCodec.java:140)
+	at htsjdk.tribble.bed.BEDCodec.decode(BEDCodec.java:92)
+	at htsjdk.tribble.bed.BEDCodec.decode(BEDCodec.java:44)
+	at htsjdk.tribble.AsciiFeatureCodec.decode(AsciiFeatureCodec.java:70)
+	at htsjdk.tribble.AsciiFeatureCodec.decode(AsciiFeatureCodec.java:37)
+	at htsjdk.tribble.TribbleIndexedFeatureReader$WFIterator.readNextRecord(TribbleIndexedFeatureReader.java:375)
+	... 9 more

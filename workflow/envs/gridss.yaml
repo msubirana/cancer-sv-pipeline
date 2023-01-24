@@ -1,18 +1,22 @@
+name: gridss
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - gridss=2.13.2
-  - cpulimit=0.2
-  # - samtools=1.13
-  # - bwa
-  # - r-base=4.1.1
-  # - r-tidyverse
-  # - bioconductor-ggbio
+  - gridss
+  - samtools=1.13
+  - bwa
+  - r-base=4.1.1
+  - r-tidyverse
+  - bioconductor-ggbio
+  - r-devtools
+  - r-stringr
+
+
+
   # - stringdist
   # - testthat
   # - stringr
   # - StructuralVariantAnnotation
   # - rtracklayer
   # - BSgenome.Hsapiens.UCSC.hg38
-

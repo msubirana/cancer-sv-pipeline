@@ -9,3 +9,6 @@ bcftools filter \
                 $input_vcf
 
 echo 'Filtered ' ${input_vcf}
+
+
+

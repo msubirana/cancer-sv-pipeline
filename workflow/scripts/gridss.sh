@@ -1,15 +1,12 @@
 #!/bin/env bash
 
 reference=$1
-dependencies=$2
-output=$3
-exclude=$4
-normal_bam=$5
-tumor_bam=$6
+output=$2
+exclude=$3
+normal_bam=$4
+tumor_bam=$5
 
-scripts/gridss $reference \
-        $dependencies \
-        $output \
-        $exclude \ 
-        $normal_bam \
-        $tumor_bam
+wd="$(dirname -- $output)"
+
+gridss -r $reference -o $output -w $wd -b $exclude $normal_bam $tumor_bam  # for some reason if it is not in one line gridss do not work
+

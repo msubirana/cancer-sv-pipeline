@@ -1,0 +1,12 @@
+[2023-Jan-24 01:41:06] delly call -g /mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa -x /home/msubirana/Documents/phd/repos/cancer-sv-pipeline/workflow/data/exclude_list.bed /home/msubirana/Documents/phd/sv_prove/NET25_TI.bam /home/msubirana/Documents/phd/sv_prove/NET25_BL.bam 
+[2023-Jan-24 01:41:11] Paired-end and split-read scanning
+[2023-Jan-24 01:41:35] Split-read clustering
+[2023-Jan-24 01:41:35] Paired-end clustering
+[2023-Jan-24 01:41:35] Split-read assembly
+[2023-Jan-24 01:41:45] Generate REF and ALT probes
+[2023-Jan-24 01:41:46] SV annotation
+[2023-Jan-24 01:42:04] Genotyping
+[2023-Jan-24 01:42:04] Sample statistics
+Sample:NET25_TI,ReadSize=150,Median=334,MAD=55,UniqueDiscordantPairs=3273
+Sample:NET25_BL,ReadSize=150,Median=342,MAD=59,UniqueDiscordantPairs=1321
+[2023-Jan-24 01:42:04] Done.
