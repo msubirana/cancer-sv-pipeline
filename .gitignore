@@ -5,4 +5,3 @@ logs/**
 .snakemake/**
 install_dir/**
 workflow/.snakemake/**
-workflow/data/**
