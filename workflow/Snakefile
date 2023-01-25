@@ -33,11 +33,16 @@ samples = list(set([basename(x).split('_')[0]
 
 rule All:
     input:
+        f'{config.install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py',
+        f'{config.install_dir}/excord',
+        f'{config.install_dir}/giggle/bin/giggle',
+        f'{config.install_dir}/stix/bin/stix',
         expand(f'{config.outdir}/manta/{{sample}}_pass.vcf', sample=samples),
         expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
         expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples), 
         expand(f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz', sample=samples),
-        f'{config.install_dir}/excord'
+        expand(f'{config.outdir}/excord/{{sample}}.bed.gz', sample=samples)
+        
         
 # ==============================================================================
 # Installation Rules
@@ -58,12 +63,27 @@ rule InstallGiggle:
     """
     Build giggle from source
     """
-
+    input:
+        script = "scripts/install_giggle.sh",
+    output:
+        giggle = f'{config.install_dir}/giggle/bin/giggle', 
+    shell:
+        """
+        {input.script} {config.install_dir}
+        """
 rule InstallStix:
     """
     Build stix and dependencies from source (Depends on giggle)
     """
-    
+    input:
+        script = "scripts/install_stix.sh",
+        giggle_path = f'{rules.InstallGiggle.output.giggle}', # wait for giggle
+    output:
+        stix = f'{config.install_dir}/stix/bin/stix',
+    shell:
+        """
+        {input.script} {config.install_dir} {input.giggle_path}
+        """
 rule InstallManta:
     """
     Install manta from github release.
@@ -82,11 +102,25 @@ rule InstallManta:
 # TODO STIX index creation
 # Create a STIX index with tumor samples
 # ==============================================================================
-
 rule ExcordTumors:
     """
     Extract discordant/split reads from tumor BAMs
     """
+    input:
+        script = "scripts/ExcordTumors.sh",
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        reference = f'{config.reference}',
+        excord = f'{rules.InstallExcord.output.binary_excord}',
+    output:
+        f'{config.outdir}/excord/{{sample}}.bed.gz',
+    log:
+        f'logs/ExcordTumors_{{sample}}.log',
+    conda:
+        'envs/excord.yaml',
+    shell:
+        """
+        {input.script} {input.tumor_bam} {input.reference} {output} {input.excord}
+        """
 rule MakeGiggleIndex:
     """
     Create giggle index from excord bedpe's
@@ -96,7 +130,6 @@ rule MakeSTIXIndex:
     """
     Create STIX index from giggle index
     """
-
 # ==============================================================================
 # GRIDSS Rules
 # ==============================================================================

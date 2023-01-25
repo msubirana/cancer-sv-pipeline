@@ -1,0 +1,6 @@
+name: excord
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - samtools
