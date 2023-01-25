@@ -41,7 +41,9 @@ rule All:
         expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
         expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples), 
         expand(f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz', sample=samples),
-        expand(f'{config.outdir}/excord/{{sample}}.bed.gz', sample=samples)
+        expand(f'{config.outdir}/excord/{{sample}}.bed.gz', sample=samples),
+        f'{config.outdir}/giggle/INS',
+        f'{config.outdir}/stix/INS.ped.db'
         
         
 # ==============================================================================
@@ -121,15 +123,43 @@ rule ExcordTumors:
         """
         {input.script} {input.tumor_bam} {input.reference} {output} {input.excord}
         """
+# todo: what if stix runs before finish giggle?
+# todo: what about threads conda deals by itself?
 rule MakeGiggleIndex:
     """
     Create giggle index from excord bedpe's
     """
-
+    input:
+        script = "scripts/MakeGiggleIndex.sh",
+        giggle = f'{rules.InstallGiggle.output.giggle}',
+        excord_path = f'{config.outdir}/excord',
+    output:
+        directory(f'{config.outdir}/giggle/INS'),
+    log:
+        f'logs/MakeGiggleIndex_INS.log',
+    shell:
+        """
+        {input.script} {input.giggle} {input.excord_path} {output}
+        """
+# todo: ped file automatically or sample, sex and bed file?
 rule MakeSTIXIndex:
     """
     Create STIX index from giggle index
     """
+    input:
+        script = "scripts/MakeSTIXIndex.sh",
+        stix = f'{rules.InstallStix.output.stix}',
+        giggle_index = f'{rules.MakeGiggleIndex.output}',
+        excord_path = f'{config.outdir}/excord',
+        ped = '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/giggle/INS/INS.ped'
+    output:
+        f'{config.outdir}/stix/INS.ped.db',
+    log:
+        f'logs/MakeSTIXIndex_INS.log',
+    shell:
+        """
+        {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
+        """
 # ==============================================================================
 # GRIDSS Rules
 # ==============================================================================
