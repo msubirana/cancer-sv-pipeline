@@ -5,6 +5,7 @@
 install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
 manta_version: '1.6.0'
 excord_version: '0.2.4'
+duphold_version: '0.2.3'
 # for now I've chosen keep tumor and normal bams
 # in separate directories.
 # 

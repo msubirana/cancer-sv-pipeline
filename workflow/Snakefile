@@ -6,24 +6,33 @@ import utils
 
 configfile: 'conf/config.yaml'
 
-# how to snakemake -j 1  --use-conda with mamba
-# to do define threads gridss?
+
 # conda for smoove 
-# duphold (annotate vcf with values for del and dup log2 region and flanking filter del) all sv callers
 # annotation gridss to del, dup...
 # test individually 
-# filter duphold 
 # stix filtering reduce sizes vcf 
-# survivor faster!
 # excore like bam files sv evidence (paral) 
 # giggle from source c++ snakemake rule output is a bin 
 # create giggle index one for all tumors and all ctrl backbound of stix index (1st 2 bams)
 # stix install from source
 # stix index faster than giggle
 # create hg38 1000g index for stix (crams) 3 bams excord high cov
+# duphold all vcfs
+
+# TODO: duphold works on sv that are not dup-del? will all the other filtered? empty vcfs in the sample
+# TODO: only one rule to filter duphold and pass variants for having a folder with everything and then postprocessing?
+# TODO: wes samples can be handeled?
+# TODO: define threads gridss?
+# TODO: survivor
+# TODO: what if stix runs before finish giggle?
+# TODO: what about threads conda deals by itself?
+# TODO Smoove (lumpy/SVTYPER) rules
+# TODO: ped file automatically or sample, sex and bed file?
+# TODO STIX filtering for germline SV callers
+
+# EXAMPLE: config['ABC'] becomes config.ABC
 # This allows for dot (.) access instead of dict access
 # of configuration parameters.
-# EXAMPLE: config['ABC'] becomes config.ABC
 config = SimpleNamespace(**config)
 
 # file follows {sample}_{BL|TI}.bam name scheme
@@ -35,6 +44,7 @@ rule All:
     input:
         f'{config.install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py',
         f'{config.install_dir}/excord',
+        f'{config.install_dir}/duphold',
         f'{config.install_dir}/giggle/bin/giggle',
         f'{config.install_dir}/stix/bin/stix',
         expand(f'{config.outdir}/manta/{{sample}}_pass.vcf', sample=samples),
@@ -99,9 +109,20 @@ rule InstallManta:
         """
         {input.script} {config.install_dir} {config.manta_version}
         """
+rule InstallDuphold:
+    """
+    Pull Duphold bin from github release
+    """
+    input:
+        script = "scripts/install_duphold.sh",
+    output:
+        binary_duphold = f'{config.install_dir}/duphold',
+    shell:
+        """
+        {input.script} {config.install_dir} {config.duphold_version}
+        """
 
 # ==============================================================================
-# TODO STIX index creation
 # Create a STIX index with tumor samples
 # ==============================================================================
 rule ExcordTumors:
@@ -123,8 +144,6 @@ rule ExcordTumors:
         """
         {input.script} {input.tumor_bam} {input.reference} {output} {input.excord}
         """
-# todo: what if stix runs before finish giggle?
-# todo: what about threads conda deals by itself?
 rule MakeGiggleIndex:
     """
     Create giggle index from excord bedpe's
@@ -141,7 +160,7 @@ rule MakeGiggleIndex:
         """
         {input.script} {input.giggle} {input.excord_path} {output}
         """
-# todo: ped file automatically or sample, sex and bed file?
+
 rule MakeSTIXIndex:
     """
     Create STIX index from giggle index
@@ -198,6 +217,24 @@ rule annotatedGridss:
         """
         Rscript {input.script} {input.input_vcf} {output}
         """
+
+# rule filterDuphold:
+#     """
+#     add depth information to those calls and filter false SVs
+#     """
+#     input:
+#         script = 'scripts/duphold.sh',
+#         input_vcf = f'{rules.annotatedGridss.output}',
+#     output:
+#         f'{config.outdir}/gridss/{{sample}}_dup_pass.vcf',
+#     log:
+#         f'logs/filterGridss_{{sample}}.log',    
+#     conda:
+#         'envs/post_processing.yaml',
+#     shell:
+#         """
+#         {input.script} {input.input_vcf} {output}
+#         """
 
 rule filterGridss:
     """
@@ -321,7 +358,6 @@ rule filterManta:
         """
 
 # ==============================================================================
-# TODO Smoove (lumpy/SVTYPER) rules
 # Lumpy will just report all SVs so filtering will need to be done
 # with STIX to get rid of germline variants
 # ==============================================================================

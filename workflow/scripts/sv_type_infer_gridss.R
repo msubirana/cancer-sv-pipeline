@@ -28,8 +28,7 @@ info(header(vcf)) = unique(as(rbind(as.data.frame(info(header(vcf))), data.frame
 	Description=c("Simple event type annotation based purely on breakend position and orientation."))), "DataFrame"))
 gr <- breakpointRanges(vcf)
 svtype <- simpleEventType(gr)
-info(vcf)$SIMPLE_TYPE <- NA_character_
 info(vcf)$SVLEN <- NA_character_
-info(vcf[gr$sourceId])$SIMPLE_TYPE <- svtype
+info(vcf[gr$sourceId])$SVTYPE <- svtype
 info(vcf[gr$sourceId])$SVLEN <- gr$svLen
 writeVcf(vcf, vcf_out)
