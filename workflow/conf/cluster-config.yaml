@@ -1,0 +1,84 @@
+__default__:
+  job-name: "{rule}"
+  partition: normal
+  time: 180 # minutes
+  nodes: 1
+  ntasks: 4
+  mem: 32gb
+  output: "log/{rule}-%j.out"
+  error: "log/{rule}-%j.err"
+
+ExcordTumors:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb 
+
+MakeGiggleIndex:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+MakeSTIXIndex:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+gridss:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+RunManta:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+delly_bcf:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 2
+  mem: 128gb
+
+smoove_call:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 2
+  mem: 128gb
+
+smoove_genotype:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 2
+  mem: 128gb
+
+annotatedGridss:
+  partition: haswell
+
+filterDupholdGridss:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 16
+  mem: 64gb
+
+filterDupholdDelly:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 16
+  mem: 64gb
+
+filterDupholdManta:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 16
+  mem: 64gb
+
+filterDupholdSmoove:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 16
+  mem: 64gb
