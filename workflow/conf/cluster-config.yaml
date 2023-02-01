@@ -14,13 +14,31 @@ ExcordTumors:
   ntasks: 64
   mem: 128gb 
 
-MakeGiggleIndex:
+ExcordCtrls:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb 
+
+MakeGiggleIndexTumors:
   partition: haswell
   time: 10080 # 1 week
   ntasks: 64
   mem: 128gb
 
-MakeSTIXIndex:
+MakeGiggleIndexCtrls:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+MakeSTIXIndexTumors:
+  partition: haswell
+  time: 10080 # 1 week
+  ntasks: 64
+  mem: 128gb
+
+MakeSTIXIndexCtrls:
   partition: haswell
   time: 10080 # 1 week
   ntasks: 64

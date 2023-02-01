@@ -14,5 +14,3 @@ samtools view -b $tumor_bam \
     /dev/stdin \
 | LC_ALL=C sort --buffer-size 2G -k1,1 -k2,2n -k3,3n \
 | bgzip -c > $out_bed
-
-

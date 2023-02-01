@@ -6,6 +6,8 @@ import utils
 
 configfile: 'conf/config.yaml'
 
+# TODO: how to wait for all samples excord in giggle?
+
 # EXAMPLE: config['ABC'] becomes config.ABC
 # This allows for dot (.) access instead of dict access
 # of configuration parameters.
@@ -26,9 +28,7 @@ rule All:
         expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
         expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples), 
         expand(f'{config.outdir}/smoove/{{sample}}_pass.vcf', sample=samples), 
-        expand(f'{config.outdir}/excord/tumors/{{sample}}.bed.gz', sample=samples),
-        # f'{config.outdir}/giggle/INS',
-        # f'{config.outdir}/stix/INS.ped.db'
+
   
 # ==============================================================================
 # Installation Rules
@@ -110,67 +110,102 @@ rule ExcordTumors:
     output:
         f'{config.outdir}/excord/tumors/{{sample}}.bed.gz',
     log:
-        f'logs/ExcordTumors_{{sample}}.log',
+        f'{config.outdir}/logs/ExcordTumors_{{sample}}.log',
     conda:
         'envs/excord.yaml',
     shell:
         """
-        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord} 
+        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
         """
-# rule ExcordCtrls:
-#     """
-#     Extract discordant/split reads from ctrl BAMs
-#     """
-#     input:
-#         script = "scripts/ExcordTumors.sh",
-#         tumor_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
-#         reference = f'{config.reference}',
-#         excord = f'{rules.InstallExcord.output.binary_excord}',
-#     output:
-#         bed = f'{config.outdir}/excord/ctrl/{{sample}}.bed.gz',
-#         path_excord = f'{config.outdir}/excord/ctrl',
-#     log:
-#         f'logs/ExcordCtrls_{{sample}}.log',
-#     conda:
-#         'envs/excord.yaml',
-#     shell:
-#         """
-#         {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
-#         """
+rule ExcordCtrls:
+    """
+    Extract discordant/split reads from tumor BAMs
+    """
+    input:
+        script = "scripts/Excord.sh",
+        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        reference = f'{config.reference}',
+        excord = f'{rules.InstallExcord.output.binary_excord}',
+    output:
+        f'{config.outdir}/excord/ctrls/{{sample}}.bed.gz',
+    log:
+        f'{config.outdir}/logs/ExcordCtrls_{{sample}}.log',
+    conda:
+        'envs/excord.yaml',
+    shell:
+        """
+        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
+        """
     
-# rule MakeGiggleIndexTumors:
-#     """
-#     Create giggle index from excord bedpe's
-#     """
-#     input:
-#         script = "scripts/MakeGiggleIndex.sh",
-#         giggle = f'{rules.InstallGiggle.output.giggle}',
-#         excord_path = f'{rules.ExcordTumors.output.path_excord}',
-#     output:
-#         directory(f'{config.outdir}/giggle/tumor'),
-#     log:
-#         f'logs/MakeGiggleIndexTumors.log',
-#     shell:
-#         """
-#         {input.script} {input.giggle} {input.excord_path} {output}
-#         """
-# rule MakeSTIXIndexTumor:
-#     """
-#     Create STIX index from giggle index
-#     """
-#     input:
-#         script = "scripts/MakeSTIXIndex.sh",
-#         stix = f'{rules.InstallStix.output.stix}',
-#         giggle_index = f'{rules.MakeGiggleIndex.output}',
-#         ped = '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/giggle/INS/INS.ped'
-#     output:
-#         f'{config.outdir}/stix/tumor.ped.db',
-#     log:
-#         f'logs/MakeSTIXIndexTumor.log',
-#     shell:
-#         """
-#         {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
-#         """
+rule MakeGiggleIndexTumors:
+    """
+    Create giggle index from excord bedpe's
+    """
+    input:
+        script = "scripts/MakeGiggleIndex.sh",
+        giggle = f'{rules.InstallGiggle.output.giggle}',
+        excord_path = f'{config.outdir}/excord',
+    output:
+        directory(f'{config.outdir}/giggle/tumor'),
+    log:
+        f'{config.outdir}/logs/MakeGiggleIndexTumors.log',
+    shell:
+        """
+        {input.script} {input.giggle} {input.excord_path} {output}
+        """
+
+rule MakeGiggleIndexCtrls:
+    """
+    Create giggle index from excord bedpe's
+    """
+    input:
+        script = "scripts/MakeGiggleIndex.sh",
+        giggle = f'{rules.InstallGiggle.output.giggle}',
+        excord_path = f'{config.outdir}/excord',
+    output:
+        directory(f'{config.outdir}/giggle/ctrl'),
+    log:
+        f'{config.outdir}/logs/MakeGiggleIndexCtrls.log',
+    shell:
+        """
+        {input.script} {input.giggle} {input.excord_path} {output}
+        """
+    
+rule MakeSTIXIndexTumors:
+    """
+    Create STIX index from giggle index
+    """
+    input:
+        script = "scripts/MakeSTIXIndex.sh",
+        stix = f'{rules.InstallStix.output.stix}',
+        giggle_index = f'{rules.MakeGiggleIndexTumors.output}',
+        ped = '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/giggle/tumors.ped'
+    output:
+        f'{config.outdir}/stix/tumor.ped.db',
+    log:
+        f'{config.outdir}/logs/MakeSTIXIndexTumors_.log',
+    shell:
+        """
+        {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
+        """
+
+rule MakeSTIXIndexCtrls:
+    """
+    Create STIX index from giggle index
+    """
+    input:
+        script = "scripts/MakeSTIXIndex.sh",
+        stix = f'{rules.InstallStix.output.stix}',
+        giggle_index = f'{rules.MakeGiggleIndexCtrls.output}',
+        ped = '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results/giggle/ctrls.ped'
+    output:
+        f'{config.outdir}/stix/ctrl.ped.db',
+    log:
+        f'{config.outdir}/logs/MakeSTIXIndexCtrls.log',
+    shell:
+        """
+        {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
+        """
 # ==============================================================================
 # GRIDSS Rules
 # ==============================================================================
@@ -186,7 +221,7 @@ rule gridss:
     threads:
         workflow.cores
     log:
-        f'logs/gridss_{{sample}}.log',
+        f'{config.outdir}/logs/gridss_{{sample}}.log',
     conda:
         'envs/gridss.yaml',
     shell:
@@ -204,7 +239,7 @@ rule annotatedGridss:
     output:
         f'{config.outdir}/gridss/{{sample}}_ann.vcf',
     log:
-        f'logs/annotatedGridss{{sample}}.log',    
+        f'{config.outdir}/logs/annotatedGridss{{sample}}.log',    
     conda:
         'envs/gridss.yaml',
     shell:
@@ -227,7 +262,7 @@ rule filterDupholdGridss:
     threads:
         workflow.cores
     log:
-        f'logs/filterDupholdGridss{{sample}}.log',    
+        f'{config.outdir}/logs/filterDupholdGridss{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -244,7 +279,7 @@ rule filterGridss:
     output:
         f'{config.outdir}/gridss/{{sample}}_pass.vcf',
     log:
-        f'logs/filterGridss_{{sample}}.log',    
+        f'{config.outdir}/logs/filterGridss_{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -269,7 +304,7 @@ rule delly_bcf:
     params:
         uncompressed_bcf=True,
     log:
-        f'logs/delly_bcf_{{sample}}.log',   
+        f'{config.outdir}/logs/delly_bcf_{{sample}}.log',   
     threads: 2  # It is best to use as many threads as samples
     wrapper:
         "v1.19.2/bio/delly"
@@ -281,7 +316,7 @@ rule bcfToVcfDelly:
     output:
         f'{config.outdir}/delly/{{sample}}.vcf',
     log:
-        f'logs/bcfToVcfDelly_{{sample}}.log',    
+        f'{config.outdir}/logs/bcfToVcfDelly_{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -304,7 +339,7 @@ rule filterDupholdDelly:
     threads:
         workflow.cores
     log:
-        f'logs/filterDupholdDelly{{sample}}.log',    
+        f'{config.outdir}/logs/filterDupholdDelly{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -322,7 +357,7 @@ rule filterDelly:
     output:
         f'{config.outdir}/delly/{{sample}}_pass.vcf',
     log:
-        f'logs/filterDelly_{{sample}}.log',   
+        f'{config.outdir}/logs/filterDelly_{{sample}}.log',   
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -349,7 +384,7 @@ rule ConfigManta:
     output:
         runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py',
     log:
-        f'logs/ConfigManta_{{sample}}.log',
+        f'{config.outdir}/logs/ConfigManta_{{sample}}.log',
     shell:
         """
         {input.script} {input.configManta} \
@@ -371,7 +406,7 @@ rule RunManta:
     threads:
         workflow.cores
     log:
-        f'logs/RunManta_{{sample}}.log',
+        f'{config.outdir}/logs/RunManta_{{sample}}.log',
     shell:
         """
         {input.script} {input.rundir} {threads}
@@ -392,7 +427,7 @@ rule filterDupholdManta:
     threads:
         workflow.cores
     log:
-        f'logs/filterDupholdManta{{sample}}.log',    
+        f'{config.outdir}/logs/filterDupholdManta{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -410,7 +445,7 @@ rule filterManta:
     output:
         f'{config.outdir}/manta/{{sample}}_pass.vcf',
     log:
-        f'logs/filterManta_{{sample}}.log',
+        f'{config.outdir}/logs/filterManta_{{sample}}.log',
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -434,7 +469,7 @@ rule smoove_call:
     params:
         output_dir = f'{config.outdir}/smoove/called',
     log:
-        f'logs/smoove_call_{{sample}}.log',
+        f'{config.outdir}/logs/smoove_call_{{sample}}.log',
     conda:
         'envs/smoove.yaml',
     shell:
@@ -450,7 +485,7 @@ rule smoove_genotype:
     output:
         f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz',
     log:
-        f'logs/smoove_genotype_{{sample}}.log',
+        f'{config.outdir}/logs/smoove_genotype_{{sample}}.log',
     params:
         output_dir = f'{config.outdir}/smoove/genotyped',
     conda:
@@ -467,7 +502,7 @@ rule bcfToVcfSmoove:
     output:
         f'{config.outdir}/smoove/{{sample}}.vcf',
     log:
-        f'logs/bcfToVcfSmoove_{{sample}}.log',    
+        f'{config.outdir}/logs/bcfToVcfSmoove_{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -490,7 +525,7 @@ rule filterDupholdSmoove:
     threads:
         workflow.cores
     log:
-        f'logs/filterDupholdSmoove{{sample}}.log',    
+        f'{config.outdir}/logs/filterDupholdSmoove{{sample}}.log',    
     conda:
         'envs/post_processing.yaml',
     shell:
@@ -508,7 +543,7 @@ rule filterSmoove:
     output:
         f'{config.outdir}/smoove/{{sample}}_pass.vcf',
     log:
-        f'logs/filterSmoove_{{sample}}.log',
+        f'{config.outdir}/logs/filterSmoove_{{sample}}.log',
     conda:
         'envs/post_processing.yaml',
     shell:
