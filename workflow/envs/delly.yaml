@@ -1,11 +1,7 @@
-name: delly2
+name: delly
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bcftools=1.16
-  - delly=1.1.5
-  - snakemake-wrapper-utils=0.5.0
-
-
-
+  - delly
+  - bcftools

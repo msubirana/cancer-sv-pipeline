@@ -1,2 +1,3 @@
-sample,ti,bl
-NET25,/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam
+sample,tumor,ctrl,experiment
+NET25,/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam,wgs
+NET111,/home/msubirana/Documents/phd/sv_prove/NET111_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET111_BL.bam,wes

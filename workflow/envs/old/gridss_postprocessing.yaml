@@ -1,0 +1,10 @@
+name: gridss_postprocessing
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - htslib
+  - bcftools
+  - duphold
+
+

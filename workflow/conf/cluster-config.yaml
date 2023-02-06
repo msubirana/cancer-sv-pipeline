@@ -10,93 +10,79 @@ __default__:
 
 ExcordTumors:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
+  time: 2880 
   mem: 128gb 
 
 ExcordCtrls:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
+  time: 2880 
   mem: 128gb 
 
 MakeGiggleIndexTumors:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
-  mem: 128gb
+  time: 10080 
+  mem: 64gb 
 
 MakeGiggleIndexCtrls:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
-  mem: 128gb
+  time: 10080 
+  mem: 64gb
 
 MakeSTIXIndexTumors:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
+  time: 2880 
   mem: 128gb
 
 MakeSTIXIndexCtrls:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
-  mem: 128gb
+  time: 2880 
 
 gridss:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 64
-  mem: 128gb
+  time: 4320 
+  ntasks: 8 
+  mem: 32gb
 
 RunManta:
   partition: haswell
-  time: 10080 # 1 week
+  time: 4320 
   ntasks: 64
-  mem: 128gb
+  mem: 128gb 
 
-delly_bcf:
+delly:
   partition: haswell
-  time: 10080 # 1 week
+  time: 4320 
   ntasks: 2
-  mem: 128gb
 
-smoove_call:
+smoove:
   partition: haswell
-  time: 10080 # 1 week
+  time: 4320 
   ntasks: 2
-  mem: 128gb
 
-smoove_genotype:
+gridss_wes:
   partition: haswell
-  time: 10080 # 1 week
+  time: 4320 
+  ntasks: 8 
+  mem: 32gb
+
+RunMantaWes:
+  partition: haswell
+  time: 4320 
+  ntasks: 64
+  mem: 128gb 
+
+delly_wes:
+  partition: haswell
+  time: 4320 
   ntasks: 2
-  mem: 128gb
 
-annotatedGridss:
+smoove_wes:
   partition: haswell
+  time: 4320 
+  ntasks: 2
 
-filterDupholdGridss:
+cnvkit:
   partition: haswell
-  time: 10080 # 1 week
-  ntasks: 16
-  mem: 64gb
-
-filterDupholdDelly:
-  partition: haswell
-  time: 10080 # 1 week
-  ntasks: 16
-  mem: 64gb
-
-filterDupholdManta:
-  partition: haswell
-  time: 10080 # 1 week
-  ntasks: 16
-  mem: 64gb
-
-filterDupholdSmoove:
-  partition: haswell
-  time: 10080 # 1 week
-  ntasks: 16
-  mem: 64gb
+  time: 4320 
+  ntasks: 8 
+  mem: 32gb

@@ -11,12 +11,4 @@ dependencies:
   - bioconductor-ggbio
   - r-devtools
   - r-stringr
-
-
-
-  # - stringdist
-  # - testthat
-  # - stringr
-  # - StructuralVariantAnnotation
-  # - rtracklayer
-  # - BSgenome.Hsapiens.UCSC.hg38
+  - bcftools

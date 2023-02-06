@@ -1,0 +1,8 @@
+name: cnvkit
+channels:
+  - bioconda
+  - conda-forge 
+dependencies:
+  - cnvkit
+
+

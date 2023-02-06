@@ -1,9 +1,0 @@
-name: duphold
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - bcftools
-
-
-

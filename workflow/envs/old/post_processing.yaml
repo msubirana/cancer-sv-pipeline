@@ -1,0 +1,6 @@
+name: post_processing
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bcftools=1.16

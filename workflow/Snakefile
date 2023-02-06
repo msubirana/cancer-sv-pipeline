@@ -3,19 +3,36 @@ from glob import glob
 from types import SimpleNamespace
 import os
 import utils
+import pandas as pd
 
 configfile: 'conf/config.yaml'
 
 # TODO: how to wait for all samples excord in giggle?
+# TODO: stix list with wes?
+# TODO: correct bam row problems
+# TODO: cnvkit and seenv
+# TODO: batch file to the directory of snakemake and run
+# TODO: stix indexes
+# TODO: cnvs to inclue cnvkit and ask to Michael
+# TODO: seenv
+# TODO: INSurVeyor for insertions
+
+
 
 # EXAMPLE: config['ABC'] becomes config.ABC
 # This allows for dot (.) access instead of dict access
 # of configuration parameters.
 config = SimpleNamespace(**config)
 
-# file follows {sample}_{BL|TI}.bam name scheme
-samples = list(set([basename(x).split('_')[0]
-    for x in glob(os.path.join(config.bam_dir, '*.bam'))]))
+# sample name without any extension (tumor, ctrl and .bai extensions removed, example NET25)
+# path of file
+# type ("tumor" or "control")
+# experiment ("WGS" or "WES")
+
+samples_data = pd.read_csv(f'{config.samples_csv}')
+samples_data = pd.read_csv('conf/samples.csv')
+samples_wgs = list(set(samples_data['sample'][samples_data['experiment'] == 'wgs'].tolist()))
+samples_wes = list(set(samples_data['sample'][samples_data['experiment'] == 'wes'].tolist()))
 
 rule All:
     input:
@@ -24,14 +41,21 @@ rule All:
         f'{config.install_dir}/duphold',
         f'{config.install_dir}/giggle/bin/giggle',
         f'{config.install_dir}/stix/bin/stix',
-        expand(f'{config.outdir}/manta/{{sample}}_pass.vcf', sample=samples),
-        expand(f'{config.outdir}/delly/{{sample}}_pass.vcf', sample=samples),
-        expand(f'{config.outdir}/gridss/{{sample}}_pass.vcf', sample=samples), 
-        expand(f'{config.outdir}/smoove/{{sample}}_pass.vcf', sample=samples), 
+        expand(f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
+        expand(f'{config.outdir}/gridss/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs), 
+        expand(f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
+        expand(f'{config.outdir}/delly/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
+        expand(f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
+        expand(f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
+        expand(f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
+        expand(f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
+        f'{config.outdir}/cnvkit/finished.txt'
 
-  
+# diferent name in list expand
 # ==============================================================================
-# Installation Rules
+# ==============================================================================
+# INSTALLATION RULES
+# ==============================================================================
 # ==============================================================================
 rule InstallExcord:
     """
@@ -95,16 +119,34 @@ rule InstallDuphold:
         """
         {input.script} {config.install_dir} {config.duphold_version}
         """
+rule InstallSeeNV:
+    """
+    Build SeeNV from source
+    """
+    input:
+        script = "scripts/install_seenv.sh",
+    output:
+        giggle = f'{config.install_dir}/SeeNV/bin/giggle', 
+    shell:
+        """
+        {input.script} {config.install_dir}
+        """
+# ==============================================================================
+# ==============================================================================
+# CREATE STIX INDEXES
+# ==============================================================================
+# ==============================================================================
 # ==============================================================================
 # Create a STIX index with tumor samples
 # ==============================================================================
+# ruleorder: rule1 > rule2 > rule3
 rule ExcordTumors:
     """
     Extract discordant/split reads from tumor BAMs
     """
     input:
         script = "scripts/Excord.sh",
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        tumor_bam = f'{config.bam_dir}/{{sample}}{config.tumor_ext}.bam',
         reference = f'{config.reference}',
         excord = f'{rules.InstallExcord.output.binary_excord}',
     output:
@@ -117,26 +159,6 @@ rule ExcordTumors:
         """
         {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
         """
-rule ExcordCtrls:
-    """
-    Extract discordant/split reads from tumor BAMs
-    """
-    input:
-        script = "scripts/Excord.sh",
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-        reference = f'{config.reference}',
-        excord = f'{rules.InstallExcord.output.binary_excord}',
-    output:
-        f'{config.outdir}/excord/ctrls/{{sample}}.bed.gz',
-    log:
-        f'{config.outdir}/logs/ExcordCtrls_{{sample}}.log',
-    conda:
-        'envs/excord.yaml',
-    shell:
-        """
-        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
-        """
-    
 rule MakeGiggleIndexTumors:
     """
     Create giggle index from excord bedpe's
@@ -153,24 +175,6 @@ rule MakeGiggleIndexTumors:
         """
         {input.script} {input.giggle} {input.excord_path} {output}
         """
-
-rule MakeGiggleIndexCtrls:
-    """
-    Create giggle index from excord bedpe's
-    """
-    input:
-        script = "scripts/MakeGiggleIndex.sh",
-        giggle = f'{rules.InstallGiggle.output.giggle}',
-        excord_path = f'{config.outdir}/excord',
-    output:
-        directory(f'{config.outdir}/giggle/ctrl'),
-    log:
-        f'{config.outdir}/logs/MakeGiggleIndexCtrls.log',
-    shell:
-        """
-        {input.script} {input.giggle} {input.excord_path} {output}
-        """
-    
 rule MakeSTIXIndexTumors:
     """
     Create STIX index from giggle index
@@ -188,7 +192,44 @@ rule MakeSTIXIndexTumors:
         """
         {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
         """
-
+# ==============================================================================
+# Create a STIX index with CTRL samples
+# ==============================================================================
+rule ExcordCtrls:
+    """
+    Extract discordant/split reads from tumor BAMs
+    """
+    input:
+        script = "scripts/Excord.sh",
+        tumor_bam = f'{config.bam_dir}/{{sample}}{config.tumor_ext}.bam',
+        reference = f'{config.reference}',
+        excord = f'{rules.InstallExcord.output.binary_excord}',
+    output:
+        f'{config.outdir}/excord/ctrls/{{sample}}.bed.gz',
+    log:
+        f'{config.outdir}/logs/ExcordCtrls_{{sample}}.log',
+    conda:
+        'envs/excord.yaml',
+    shell:
+        """
+        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
+        """
+rule MakeGiggleIndexCtrls:
+    """
+    Create giggle index from excord bedpe's
+    """
+    input:
+        script = "scripts/MakeGiggleIndex.sh",
+        giggle = f'{rules.InstallGiggle.output.giggle}',
+        excord_path = f'{config.outdir}/excord',
+    output:
+        directory(f'{config.outdir}/giggle/ctrl'),
+    log:
+        f'{config.outdir}/logs/MakeGiggleIndexCtrls.log',
+    shell:
+        """
+        {input.script} {input.giggle} {input.excord_path} {output}
+        """
 rule MakeSTIXIndexCtrls:
     """
     Create STIX index from giggle index
@@ -207,168 +248,63 @@ rule MakeSTIXIndexCtrls:
         {input.script} {input.stix} {input.giggle_index} {output} {input.ped}
         """
 # ==============================================================================
+# ==============================================================================
+# WGS CALLING
+# ==============================================================================
+# ==============================================================================
+# ==============================================================================
 # GRIDSS Rules
 # ==============================================================================
 rule gridss:  
     input:
         script = 'scripts/gridss.sh',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
         reference = f'{config.reference}',
-        exclude = f'{config.exclude_bed}'
-    output:
-        f'{config.outdir}/gridss/{{sample}}.vcf',
-    threads:
-        workflow.cores
-    log:
-        f'{config.outdir}/logs/gridss_{{sample}}.log',
-    conda:
-        'envs/gridss.yaml',
-    shell:
-        """
-        {input.script} {input.reference} {output} {input.exclude} {input.normal_bam} {input.tumor_bam} {threads}
-        """
-
-rule annotatedGridss:
-    """
-    Filter PASS variants Gridss
-    """
-    input:
-        script = 'scripts/sv_type_infer_gridss.R',
-        input_vcf = f'{rules.gridss.output}',
-    output:
-        f'{config.outdir}/gridss/{{sample}}_ann.vcf',
-    log:
-        f'{config.outdir}/logs/annotatedGridss{{sample}}.log',    
-    conda:
-        'envs/gridss.yaml',
-    shell:
-        """
-        Rscript {input.script} {input.input_vcf} {output}
-        """
-
-rule filterDupholdGridss:
-    """
-    add depth information to those calls and filter false SVs
-    """
-    input:
+        exclude = f'{config.exclude_bed}', 
         duphold = f'{rules.InstallDuphold.output.binary_duphold}',
-        script = 'scripts/duphold.sh',
-        input_vcf = f'{rules.annotatedGridss.output}',
-        reference = f'{config.reference}',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        script_ann = 'scripts/sv_type_infer_gridss.R'
     output:
-        f'{config.outdir}/gridss/{{sample}}_dup.vcf',
+        f'{config.outdir}/gridss/{{sample_wgs}}_pass.vcf',
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wgs].tolist()[0]
     threads:
         workflow.cores
     log:
-        f'{config.outdir}/logs/filterDupholdGridss{{sample}}.log',    
+        f'{config.outdir}/logs/gridss_{{sample_wgs}}.log',
     conda:
-        'envs/post_processing.yaml',
+        'envs/gridss.yaml',
     shell:
         """
-        {input.script} {input.duphold} {input.input_vcf} {input.tumor_bam} {input.reference} {output} {threads}
+        {input.script} {input.reference} {output} {input.exclude} {params.ctrl} {params.tumor} \
+            {threads} {input.script_ann} {wildcards.sample_wgs} {input.duphold}
         """
-rule filterGridss:
-    """
-    Filter PASS variants Gridss
-    """
-    input:
-        script = 'scripts/bcftools_filter.sh',
-        input_vcf = f'{rules.filterDupholdGridss.output}',
-    output:
-        f'{config.outdir}/gridss/{{sample}}_pass.vcf',
-    log:
-        f'{config.outdir}/logs/filterGridss_{{sample}}.log',    
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.input_vcf} {output}
-        """
-
-
-
 # ==============================================================================
 # Delly Rules
 # ==============================================================================
-rule delly_bcf:
+rule delly:  
     input:
-        ref = f'{config.reference}',
-        alns = [f'{config.bam_dir}/{{sample}}_TI.bam', f'{config.bam_dir}/{{sample}}_BL.bam'],
-        exclude = f'{config.exclude_bed}',
+        script = 'scripts/delly.sh',
+        reference = f'{config.reference}',
+        exclude = f'{config.exclude_bed}', 
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
     output:
-        f'{config.outdir}/delly/{{sample}}.bcf',
+        f'{config.outdir}/delly/{{sample_wgs}}_pass.vcf',
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wgs].tolist()[0]
+    threads: 2
+    log:
+        f'{config.outdir}/logs/delly_{{sample_wgs}}.log',
     conda:
         'envs/delly.yaml',
-    params:
-        uncompressed_bcf=True,
-    log:
-        f'{config.outdir}/logs/delly_bcf_{{sample}}.log',   
-    threads: 2  # It is best to use as many threads as samples
-    wrapper:
-        "v1.19.2/bio/delly"
-
-rule bcfToVcfDelly:
-    input:
-        vcf = f'{rules.delly_bcf.output}',
-        script = 'scripts/bcf_to_vcf.sh',
-    output:
-        f'{config.outdir}/delly/{{sample}}.vcf',
-    log:
-        f'{config.outdir}/logs/bcfToVcfDelly_{{sample}}.log',    
-    conda:
-        'envs/post_processing.yaml',
     shell:
         """
-        {input.script} {input.vcf} {output}
+        {input.script} {input.reference} {output} {input.exclude} {params.ctrl} {params.tumor} \
+            {threads} {wildcards.sample_wgs} {input.duphold}
         """
-
-rule filterDupholdDelly:
-    """
-    add depth information to those calls and filter false SVs
-    """
-    input:
-        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
-        script = 'scripts/duphold.sh',
-        input_vcf = f'{rules.bcfToVcfDelly.output}',
-        reference = f'{config.reference}',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-    output:
-        f'{config.outdir}/delly/{{sample}}_dup.vcf',
-    threads:
-        workflow.cores
-    log:
-        f'{config.outdir}/logs/filterDupholdDelly{{sample}}.log',    
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.duphold} {input.input_vcf} {input.tumor_bam} {input.reference} {output} {threads}
-        """
-
-rule filterDelly:
-    """
-    Filter PASS variants Delly
-    """
-    input:
-        script = 'scripts/bcftools_filter.sh',
-        input_vcf = f'{rules.filterDupholdDelly.output}',
-    output:
-        f'{config.outdir}/delly/{{sample}}_pass.vcf',
-    log:
-        f'{config.outdir}/logs/filterDelly_{{sample}}.log',   
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.input_vcf} {output}
-        """
-
 # ==============================================================================
-# MANTA Rules
+# Manta Rules
 # ==============================================================================
-
 rule ConfigManta:
     """
     Configure the manta calling workflow
@@ -376,24 +312,23 @@ rule ConfigManta:
     input:
         script = 'scripts/conf_manta.sh',
         configManta = f'{rules.InstallManta.output.installation}',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-        normal_bam = f'{config.bam_dir}/{{sample}}_BL.bam',
         reference = f'{config.reference}',
     params:
-        rundir = f'{config.outdir}/manta/{{sample}}_manta',
+        rundir = f'{config.outdir}/manta/{{sample_wgs}}_manta',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wgs].tolist()[0]
     output:
-        runPy = f'{config.outdir}/manta/{{sample}}_manta/runWorkflow.py',
+        runPy = f'{config.outdir}/manta/{{sample_wgs}}_manta/runWorkflow.py',
     log:
-        f'{config.outdir}/logs/ConfigManta_{{sample}}.log',
+        f'{config.outdir}/logs/ConfigManta_{{sample_wgs}}.log',
     shell:
         """
         {input.script} {input.configManta} \
-                    {input.tumor_bam} \
-                    {input.normal_bam} \
+                    {params.tumor} \
+                    {params.ctrl} \
                     {input.reference} \
                     {params.rundir} 
         """
-        
 rule RunManta:
     """
     Run manta
@@ -401,155 +336,209 @@ rule RunManta:
     input:
         script = 'scripts/run_manta.sh',
         rundir = f'{rules.ConfigManta.output.runPy}',
-    output: 
-        f'{config.outdir}/manta/{{sample}}_manta/results/variants/somaticSV.vcf.gz',
-    threads:
-        workflow.cores
-    log:
-        f'{config.outdir}/logs/RunManta_{{sample}}.log',
-    shell:
-        """
-        {input.script} {input.rundir} {threads}
-        """
-
-rule filterDupholdManta:
-    """
-    add depth information to those calls and filter false SVs
-    """
-    input:
-        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
-        script = 'scripts/duphold.sh',
-        input_vcf = f'{rules.RunManta.output}',
         reference = f'{config.reference}',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-    output:
-        f'{config.outdir}/manta/{{sample}}_dup.vcf',
+        outdir=f'{config.outdir}/manta',
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
+    output: 
+        f'{config.outdir}/manta/{{sample_wgs}}_.vcf',
+    params:
+        out_run_manta=f'{config.outdir}/manta/{{sample_wgs}}_manta/results/variants/somaticSV.vcf.gz',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
     threads:
-        workflow.cores
-    log:
-        f'{config.outdir}/logs/filterDupholdManta{{sample}}.log',    
+        workflow.cores,
     conda:
-        'envs/post_processing.yaml',
+        'envs/manta.yaml',
+    log:
+        f'{config.outdir}/logs/RunManta_{{sample_wgs}}.log',
     shell:
         """
-        {input.script} {input.duphold} {input.input_vcf} {input.tumor_bam} {input.reference} {output} {threads}
+        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wgs} {input.outdir} {input.duphold}
         """
-
-rule filterManta:
-    """
-    Filter PASS variants manta
-    """
-    input:
-        script = 'scripts/bcftools_filter.sh',
-        input_vcf = f'{rules.filterDupholdManta.output}',
-    output:
-        f'{config.outdir}/manta/{{sample}}_pass.vcf',
-    log:
-        f'{config.outdir}/logs/filterManta_{{sample}}.log',
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.input_vcf} {output}
-        """
-
 # ==============================================================================
+# Smoove Rules
 # Lumpy will just report all SVs so filtering will need to be done
 # with STIX to get rid of germline variants
 # ==============================================================================
-
-rule smoove_call:
+rule smoove:
     input:
-        script = 'scripts/smoove_call.sh',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        script = 'scripts/smoove.sh',
         exclude = f'{config.exclude_bed}', 
         reference = f'{config.reference}',
     output:
-        f'{config.outdir}/smoove/called/{{sample}}-smoove.genotyped.vcf.gz',
+        f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf',
     params:
-        output_dir = f'{config.outdir}/smoove/called',
+        output_dir = f'{config.outdir}/smoove',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
     log:
-        f'{config.outdir}/logs/smoove_call_{{sample}}.log',
+        f'{config.outdir}/logs/smoove_{{sample_wgs}}.log',
     conda:
         'envs/smoove.yaml',
     shell:
         """
-        {input.script} {params.output_dir} {input.exclude} {wildcards.sample} {input.reference} {input.tumor_bam}
+        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wgs} {input.reference} {params.tumor}
         """
-rule smoove_genotype:
-    input: 
-        script = 'scripts/smoove_genotype.sh',
-        vcf = rules.smoove_call.output,
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
-        reference = f'{config.reference}',
-    output:
-        f'{config.outdir}/smoove/genotyped/{{sample}}-smoove.genotyped.vcf.gz',
-    log:
-        f'{config.outdir}/logs/smoove_genotype_{{sample}}.log',
-    params:
-        output_dir = f'{config.outdir}/smoove/genotyped',
-    conda:
-        'envs/smoove.yaml',
-    shell: 
-        """
-        {input.script} {wildcards.sample} {params.output_dir} {input.reference} {input.vcf} {input.tumor_bam}
-        """
-
-rule bcfToVcfSmoove:
+# ==============================================================================
+# CNVkit Rules
+# ==============================================================================
+rule cnvkit:
     input:
-        vcf = f'{rules.smoove_genotype.output}',
-        script = 'scripts/bcf_to_vcf.sh',
-    output:
-        f'{config.outdir}/smoove/{{sample}}.vcf',
-    log:
-        f'{config.outdir}/logs/bcfToVcfSmoove_{{sample}}.log',    
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.vcf} {output}
-        """
-
-rule filterDupholdSmoove:
-    """
-    add depth information to those calls and filter false SVs
-    """
-    input:
-        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
-        script = 'scripts/duphold.sh',
-        input_vcf = f'{rules.bcfToVcfSmoove.output}',
+        script = 'scripts/cnvkit.sh',
         reference = f'{config.reference}',
-        tumor_bam = f'{config.bam_dir}/{{sample}}_TI.bam',
+        normal_bams = ' '.join(samples_data['ctrl'][samples_data['experiment']=='wgs'].tolist()),
+        tumor_bams = ' '.join(samples_data['tumor'][samples_data['experiment']=='wgs'].tolist()),
+        refFlat = f'{config.refFlat}',
+        out_path = f'{config.outdir}'
     output:
-        f'{config.outdir}/smoove/{{sample}}_dup.vcf',
+        out_file = f'{config.outdir}/cnvkit/finished.txt',
+        out_ref_cnn = f'{config.outdir}/cnvkit/ref_cnn.cnn',
     threads:
-        workflow.cores
+        workflow.cores,
     log:
-        f'{config.outdir}/logs/filterDupholdSmoove{{sample}}.log',    
+        f'{config.outdir}/logs/cnvkit.log',
     conda:
-        'envs/post_processing.yaml',
+        'envs/cnvkit.yaml',
     shell:
         """
-        {input.script} {input.duphold} {input.input_vcf} {input.tumor_bam} {input.reference} {output} {threads}
-        """
-
-rule filterSmoove:
-    """
-    Filter PASS variants smoove
-    """
-    input:
-        script = 'scripts/bcftools_filter.sh',
-        input_vcf = f'{rules.filterDupholdSmoove.output}',
-    output:
-        f'{config.outdir}/smoove/{{sample}}_pass.vcf',
-    log:
-        f'{config.outdir}/logs/filterSmoove_{{sample}}.log',
-    conda:
-        'envs/post_processing.yaml',
-    shell:
-        """
-        {input.script} {input.input_vcf} {output}
+        {input.script} {input.reference} {input.refFlat} {output.out_ref_cnn} {input.normal_bams} {input.tumor_bams} {threads} {input.out_path}
         """
 # ==============================================================================
 # TODO STIX filtering for germline SV callers
+# ==============================================================================
+
+# ==============================================================================
+# ==============================================================================
+# WES CALLING
+# ==============================================================================
+# ==============================================================================
+# ==============================================================================
+# Manta WES Rules
+# ==============================================================================
+rule ConfigMantaWes:
+    """
+    Configure the manta calling workflow
+    """
+    input:
+        script = 'scripts/conf_manta_wes.sh',
+        configManta = f'{rules.InstallManta.output.installation}',
+        reference = f'{config.reference}',
+    params:
+        rundir = f'{config.outdir}/manta_wes/{{sample_wes}}_manta',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wes].tolist()[0]
+    output:
+        runPy = f'{config.outdir}/manta_wes/{{sample_wes}}_manta/runWorkflow.py',
+    log:
+        f'{config.outdir}/logs/ConfigMantaWes_{{sample_wes}}.log',
+    shell:
+        """
+        {input.script} {input.configManta} \
+                    {params.tumor} \
+                    {params.ctrl} \
+                    {input.reference} \
+                    {params.rundir} 
+        """
+rule RunMantaWes:
+    """
+    Run manta
+    """
+    input:
+        script = 'scripts/run_manta.sh',
+        rundir = f'{rules.ConfigMantaWes.output.runPy}',
+        reference = f'{config.reference}',
+        outdir=f'{config.outdir}/manta_wes',
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}'
+    output: 
+        f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf',
+    params:
+        out_run_manta=f'{config.outdir}/manta_wes/{{sample_wes}}_manta/results/variants/somaticSV.vcf.gz',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+    threads:
+        workflow.cores,
+    conda:
+        'envs/manta.yaml',
+    log:
+        f'{config.outdir}/logs/RunMantaWes_{{sample_wes}}.log',
+    shell:
+        """
+        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wes} {input.outdir} {input.duphold}
+        """
+# ==============================================================================
+# Smoove WES Rules
+# Lumpy will just report all SVs so filtering will need to be done
+# with STIX to get rid of germline variants
+# ==============================================================================
+rule smoove_wes:
+    input:
+        script = 'scripts/smoove.sh',
+        exclude = f'{config.exclude_bed}', 
+        reference = f'{config.reference}',
+    output:
+        f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf',
+    params:
+        output_dir = f'{config.outdir}/smoove_wes',
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+    log:
+        f'{config.outdir}/logs/smoove_wes_{{sample_wes}}.log',
+    conda:
+        'envs/smoove.yaml',
+    shell:
+        """
+        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wes} {input.reference} {params.tumor}
+        """
+# ==============================================================================
+# GRIDSS WES Rules
+# ==============================================================================
+rule gridss_wes:  
+    input:
+        script = 'scripts/gridss.sh',
+        reference = f'{config.reference}',
+        exclude = f'{config.exclude_bed}', 
+        script_ann = 'scripts/sv_type_infer_gridss.R',
+        CONFIGURATION_FILE = 'data/gridss_wes.properties',
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}'
+    output:
+        f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf',
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wes].tolist()[0]
+    threads:
+        workflow.cores
+    log:
+        f'{config.outdir}/logs/gridss_wes_{{sample_wes}}.log',
+    conda:
+        'envs/gridss.yaml',
+    shell:
+        """
+        {input.script} {input.reference} {output} {input.exclude} {params.ctrl} \
+            {params.tumor} {threads} {input.script_ann} {input.CONFIGURATION_FILE} {wildcards.sample_wes} {input.duphold}
+        """
+# ==============================================================================
+# Delly WES Rules
+# ==============================================================================
+rule delly_wes:  
+    input:
+        script = 'scripts/delly.sh',
+        reference = f'{config.reference}',
+        exclude = f'{config.exclude_bed}', 
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
+    output:
+        f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf',
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wes].tolist()[0]
+    threads: 2
+    log:
+        f'{config.outdir}/logs/delly_wes_{{sample_wes}}.log',
+    conda:
+        'envs/delly.yaml',
+    shell:
+        """
+        {input.script} {input.reference} {output} {input.exclude} {params.ctrl} {params.tumor} \
+            {threads} {wildcards.sample_wes} {input.duphold}
+        """
+# ==============================================================================
+# CNVkit WES Rules
+# ==============================================================================
+# ==============================================================================
+# SeeNV Rules
 # ==============================================================================
