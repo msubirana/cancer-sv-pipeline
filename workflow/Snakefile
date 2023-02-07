@@ -7,14 +7,17 @@ import pandas as pd
 
 configfile: 'conf/config.yaml'
 
-# TODO: how to wait for all samples excord in giggle?
-# TODO: stix list with wes?
+# Q: how to wait for all samples excord in giggle? 
+# ruleorder: rule1 > rule2 > rule3
+# Q: stix list with wes?
+# TODO: run cluster
 # TODO: correct bam row problems
 # TODO: cnvkit and seenv
 # TODO: batch file to the directory of snakemake and run
 # TODO: stix indexes
 # TODO: cnvs to inclue cnvkit and ask to Michael
 # TODO: seenv
+# TODO: seenv how to install inside snakemake?
 # TODO: INSurVeyor for insertions
 
 
@@ -49,7 +52,7 @@ rule All:
         expand(f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
-        f'{config.outdir}/cnvkit/finished.txt'
+        # f'{config.outdir}/cnvkit/finished.txt'
 
 # diferent name in list expand
 # ==============================================================================
@@ -389,8 +392,7 @@ rule cnvkit:
         refFlat = f'{config.refFlat}',
         out_path = f'{config.outdir}'
     output:
-        out_file = f'{config.outdir}/cnvkit/finished.txt',
-        out_ref_cnn = f'{config.outdir}/cnvkit/ref_cnn.cnn',
+        f'{config.outdir}/cnvkit/finished.txt',
     threads:
         workflow.cores,
     log:
@@ -399,7 +401,7 @@ rule cnvkit:
         'envs/cnvkit.yaml',
     shell:
         """
-        {input.script} {input.reference} {input.refFlat} {output.out_ref_cnn} {input.normal_bams} {input.tumor_bams} {threads} {input.out_path}
+        {input.script} {input.reference} {input.refFlat} {input.normal_bams} {input.tumor_bams} {threads} {input.out_path}
         """
 # ==============================================================================
 # TODO STIX filtering for germline SV callers

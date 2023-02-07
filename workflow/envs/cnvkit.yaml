@@ -2,7 +2,8 @@ name: cnvkit
 channels:
   - bioconda
   - conda-forge 
+  - r
 dependencies:
-  - cnvkit
+  - cnvkit=0.9.5
 
 
