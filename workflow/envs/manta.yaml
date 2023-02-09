@@ -1,7 +1,6 @@
 name: manta
 channels:
-  - defaults
-  - bioconda
   - conda-forge 
+  - bioconda
 dependencies:
   - bcftools

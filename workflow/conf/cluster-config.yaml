@@ -83,6 +83,6 @@ smoove_wes:
 
 cnvkit:
   partition: haswell
-  time: 4320 
+  time: 10080 
   ntasks: 8 
   mem: 32gb

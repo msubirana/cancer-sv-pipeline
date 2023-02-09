@@ -10,5 +10,5 @@ $manta \
 --tumorBam $tumorBam \
 --normalBam $normalBam \
 --referenceFasta $referenceFasta \
---runDir $runDir
+--runDir $runDir \
 --exome

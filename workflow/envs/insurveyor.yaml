@@ -1,0 +1,10 @@
+name: insurveyor
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.8
+  - numpy=1.21.2
+  - pyfaidx=0.5.9.1
+  - pysam=0.16.0.1
+  - picard

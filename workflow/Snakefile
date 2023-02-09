@@ -10,17 +10,18 @@ configfile: 'conf/config.yaml'
 # Q: how to wait for all samples excord in giggle? 
 # ruleorder: rule1 > rule2 > rule3
 # Q: stix list with wes?
+# Q: differences between jobs, tasks, nodes...
+# Q: bcftools isec for ctrl tumor in INSurVeryor
+# Q: cnkit is a batch finish with touch cnvs/finished.txt
 # TODO: run cluster
 # TODO: correct bam row problems
-# TODO: cnvkit and seenv
 # TODO: batch file to the directory of snakemake and run
 # TODO: stix indexes
 # TODO: cnvs to inclue cnvkit and ask to Michael
 # TODO: seenv
 # TODO: seenv how to install inside snakemake?
-# TODO: INSurVeyor for insertions
-
-
+# TODO: INSurVeyor for insertions in wes?
+# TODO; after MC tag is everything ok?
 
 # EXAMPLE: config['ABC'] becomes config.ABC
 # This allows for dot (.) access instead of dict access
@@ -39,20 +40,31 @@ samples_wes = list(set(samples_data['sample'][samples_data['experiment'] == 'wes
 
 rule All:
     input:
+        # installations
         f'{config.install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py',
         f'{config.install_dir}/excord',
         f'{config.install_dir}/duphold',
         f'{config.install_dir}/giggle/bin/giggle',
         f'{config.install_dir}/stix/bin/stix',
+        f'{config.install_dir}/INSurVeyor/surveyor.py',
+        # wgs
         expand(f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/gridss/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs), 
         expand(f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/delly/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
+        expand(f'{config.outdir}/insurveyor/{{sample_wgs}}/tumor_ctrl/{{sample_wgs}}_pass.vcf.gz', sample_wgs=samples_wgs),
+        f'{config.outdir}/cnvkit/finished.txt',
+        #wes
         expand(f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
-        # f'{config.outdir}/cnvkit/finished.txt'
+        expand(f'{config.outdir}/insurveyor_wes/{{sample_wes}}/tumor_ctrl/{{sample_wes}}_pass.vcf.gz', sample_wes=samples_wes),
+        f'{config.outdir}/cnvkit_wes/finished.txt'
+        # create stix index
+        # filter stix
+        # survivor
+
 
 # diferent name in list expand
 # ==============================================================================
@@ -121,6 +133,18 @@ rule InstallDuphold:
     shell:
         """
         {input.script} {config.install_dir} {config.duphold_version}
+        """
+rule InstallINSurVeyor:
+    """
+    Build INSurVeyor from source
+    """
+    input:
+        script = "scripts/install_insurveyor.sh",
+    output:
+        insurveyor = f'{config.install_dir}/INSurVeyor/surveyor.py', 
+    shell:
+        """
+        {input.script} {config.install_dir}
         """
 rule InstallSeeNV:
     """
@@ -385,10 +409,9 @@ rule smoove:
 # ==============================================================================
 rule cnvkit:
     input:
-        script = 'scripts/cnvkit.sh',
+        script = 'scripts/cnvkit.R',
         reference = f'{config.reference}',
-        normal_bams = ' '.join(samples_data['ctrl'][samples_data['experiment']=='wgs'].tolist()),
-        tumor_bams = ' '.join(samples_data['tumor'][samples_data['experiment']=='wgs'].tolist()),
+        samples_csv = 'conf/samples.csv',
         refFlat = f'{config.refFlat}',
         out_path = f'{config.outdir}'
     output:
@@ -401,7 +424,31 @@ rule cnvkit:
         'envs/cnvkit.yaml',
     shell:
         """
-        {input.script} {input.reference} {input.refFlat} {input.normal_bams} {input.tumor_bams} {threads} {input.out_path}
+        Rscript {input.script} {input.reference} {input.refFlat} {input.samples_csv} {threads} {input.out_path}
+        """
+# ==============================================================================
+# INSurVeyor Rules
+# ==============================================================================
+rule insurveyor:
+    input:
+        script = 'scripts/insurveyor.sh',
+        insurveyor_py = f'{rules.InstallINSurVeyor.output.insurveyor}',
+        reference = f'{config.reference}',
+        workdir = f'{config.outdir}'
+    output:
+        f'{config.outdir}/insurveyor/{{sample_wgs}}/tumor_ctrl/{{sample_wgs}}_pass.vcf.gz'
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wgs].tolist()[0]
+    threads:
+        workflow.cores,
+    log:
+        f'{config.outdir}/logs/insurveyor_{{sample_wgs}}.log',
+    conda:
+        'envs/insurveyor.yaml',
+    shell:
+        """
+        {input.script} {input.insurveyor_py} {threads} {params.tumor} {params.ctrl} {input.workdir} {input.reference} {wildcards.sample_wgs}
         """
 # ==============================================================================
 # TODO STIX filtering for germline SV callers
@@ -492,7 +539,7 @@ rule smoove_wes:
 # ==============================================================================
 rule gridss_wes:  
     input:
-        script = 'scripts/gridss.sh',
+        script = 'scripts/gridss_wes.sh',
         reference = f'{config.reference}',
         exclude = f'{config.exclude_bed}', 
         script_ann = 'scripts/sv_type_infer_gridss.R',
@@ -512,7 +559,7 @@ rule gridss_wes:
     shell:
         """
         {input.script} {input.reference} {output} {input.exclude} {params.ctrl} \
-            {params.tumor} {threads} {input.script_ann} {input.CONFIGURATION_FILE} {wildcards.sample_wes} {input.duphold}
+            {params.tumor} {threads} {input.script_ann} {wildcards.sample_wes} {input.duphold} {input.CONFIGURATION_FILE} 
         """
 # ==============================================================================
 # Delly WES Rules
@@ -541,6 +588,51 @@ rule delly_wes:
 # ==============================================================================
 # CNVkit WES Rules
 # ==============================================================================
+rule cnvkit_wes:
+    input:
+        script = 'scripts/cnvkit_wes.R',
+        reference = f'{config.reference}',
+        samples_csv = 'conf/samples.csv',
+        refFlat = f'{config.refFlat}',
+        out_path = f'{config.outdir}',
+        access_excludes = f'{config.access_excludes}',
+        exomes_hg38 = f'{config.exomes_hg38}'
+    output:
+        f'{config.outdir}/cnvkit_wes/finished.txt',
+    threads:
+        workflow.cores,
+    log:
+        f'{config.outdir}/logs/cnvkit_wes.log',
+    conda:
+        'envs/cnvkit.yaml',
+    shell:
+        """
+        Rscript {input.script} {input.reference} {input.refFlat} {input.samples_csv} {threads} {input.out_path} {input.access_excludes} {input.exomes_hg38}
+        """
+# ==============================================================================
+# INSurVeyor WES Rules
+# ==============================================================================
+rule insurveyor_wes:
+    input:
+        script = 'scripts/insurveyor_wes.sh',
+        insurveyor_py = f'{rules.InstallINSurVeyor.output.insurveyor}',
+        reference = f'{config.reference}',
+        workdir = f'{config.outdir}'
+    output:
+        f'{config.outdir}/insurveyor_wes/{{sample_wes}}/tumor_ctrl/{{sample_wes}}_pass.vcf.gz'
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wes].tolist()[0]
+    threads:
+        workflow.cores,
+    log:
+        f'{config.outdir}/logs/insurveyor_wes_{{sample_wes}}.log',
+    conda:
+        'envs/insurveyor.yaml',
+    shell:
+        """
+        {input.script} {input.insurveyor_py} {threads} {params.tumor} {params.ctrl} {input.workdir} {input.reference} {wildcards.sample_wes}
+        """
 # ==============================================================================
 # SeeNV Rules
 # ==============================================================================

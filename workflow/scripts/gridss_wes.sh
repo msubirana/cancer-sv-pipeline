@@ -8,8 +8,8 @@ tumor_bam=$5
 threads=$6
 script_ann=$7
 sample=$8
-CONFIGURATION_FILE=$9
-duphold = $10
+duphold=$9
+CONFIGURATION_FILE=${10}
 
 wd="$(dirname -- $output)"
 output_gridss=${wd}/${sample}.vcf

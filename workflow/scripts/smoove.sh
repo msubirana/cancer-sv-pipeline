@@ -19,3 +19,4 @@ bcftools filter \
                 ${outdir}/${name}_dup.vcf
 
 echo 'Smoove finished ' ${outdir}/${name}_pass.vcf
+

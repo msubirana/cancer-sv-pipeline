@@ -39,3 +39,9 @@ exclude_bed: 'data/exclude_list.bed'
 # Gene annotation database
 refFlat: 'data/refFlat.txt'
 
+# Access excludes hg38
+access_excludes: 'data/access-excludes.hg38.bed'
+
+# Exomes hg38
+
+exomes_hg38: 'data/exons.bed'
