@@ -16,7 +16,7 @@ source activate snakemake
 
 cd /gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/mtormo/cancer-sv-pipeline/workflow
 
-snakemake -s Snakemake \
+snakemake -s Snakefile \
           --use-conda --conda-frontend mamba \
           --cluster-config conf/cluster-config.yaml \
           --latency-wait 5 \
