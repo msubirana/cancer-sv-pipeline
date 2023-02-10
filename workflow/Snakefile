@@ -13,13 +13,14 @@ configfile: 'conf/config.yaml'
 # Q: differences between jobs, tasks, nodes...
 # Q: bcftools isec for ctrl tumor in INSurVeryor
 # Q: cnkit is a batch finish with touch cnvs/finished.txt
+# Q: add gargs to envs
 # TODO: run cluster
 # TODO: correct bam row problems
 # TODO: batch file to the directory of snakemake and run
 # TODO: stix indexes
 # TODO: cnvs to inclue cnvkit and ask to Michael
 # TODO: seenv
-# TODO: seenv how to install inside snakemake?
+# TODO: seenv how to install inside snakemake? errors dependencies
 # TODO: INSurVeyor for insertions in wes?
 # TODO; after MC tag is everything ok?
 
@@ -47,20 +48,21 @@ rule All:
         f'{config.install_dir}/giggle/bin/giggle',
         f'{config.install_dir}/stix/bin/stix',
         f'{config.install_dir}/INSurVeyor/surveyor.py',
+        f'{config.install_dir}/SeeNV/bin/seenv.py',
         # wgs
         expand(f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/gridss/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs), 
         expand(f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/delly/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/insurveyor/{{sample_wgs}}/tumor_ctrl/{{sample_wgs}}_pass.vcf.gz', sample_wgs=samples_wgs),
-        f'{config.outdir}/cnvkit/finished.txt',
+        # f'{config.outdir}/cnvkit/finished.txt',
         #wes
         expand(f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/insurveyor_wes/{{sample_wes}}/tumor_ctrl/{{sample_wes}}_pass.vcf.gz', sample_wes=samples_wes),
-        f'{config.outdir}/cnvkit_wes/finished.txt'
+        # f'{config.outdir}/cnvkit_wes/finished.txt'
         # create stix index
         # filter stix
         # survivor
@@ -153,7 +155,7 @@ rule InstallSeeNV:
     input:
         script = "scripts/install_seenv.sh",
     output:
-        giggle = f'{config.install_dir}/SeeNV/bin/giggle', 
+        seenv = f'{config.install_dir}/SeeNV/bin/seenv.py', 
     shell:
         """
         {input.script} {config.install_dir}
@@ -391,18 +393,21 @@ rule smoove:
         script = 'scripts/smoove.sh',
         exclude = f'{config.exclude_bed}', 
         reference = f'{config.reference}',
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
     output:
         f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf',
     params:
         output_dir = f'{config.outdir}/smoove',
         tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
+    threads:
+        workflow.cores,
     log:
         f'{config.outdir}/logs/smoove_{{sample_wgs}}.log',
     conda:
         'envs/smoove.yaml',
     shell:
         """
-        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wgs} {input.reference} {params.tumor}
+        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wgs} {input.reference} {params.tumor} {input.duphold} {workflow.cores}
         """
 # ==============================================================================
 # CNVkit Rules
@@ -521,18 +526,21 @@ rule smoove_wes:
         script = 'scripts/smoove.sh',
         exclude = f'{config.exclude_bed}', 
         reference = f'{config.reference}',
+        duphold = f'{rules.InstallDuphold.output.binary_duphold}',
     output:
         f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf',
     params:
         output_dir = f'{config.outdir}/smoove_wes',
         tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
+    threads:
+        workflow.cores,
     log:
         f'{config.outdir}/logs/smoove_wes_{{sample_wes}}.log',
     conda:
         'envs/smoove.yaml',
     shell:
         """
-        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wes} {input.reference} {params.tumor}
+        {input.script} {params.output_dir} {input.exclude} {wildcards.sample_wes} {input.reference} {params.tumor} {input.duphold} {workflow.cores}
         """
 # ==============================================================================
 # GRIDSS WES Rules

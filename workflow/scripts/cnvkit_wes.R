@@ -25,7 +25,7 @@ df_samples = read.csv(samples_csv)
 normal_bams = paste0(df_samples$ctrl[df_samples$experiment=='wes'], collapse=' ')
 tumor_bams = paste0(df_samples$tumor[df_samples$experiment=='wes'], collapse=' ')
 
-paste('cnvkit.py batch',
+system(paste('cnvkit.py batch',
 tumor_bams,
 '-n', normal_bams,
 '-f', reference,
@@ -35,7 +35,7 @@ tumor_bams,
 '--output-reference', out_ref_cnn,
 '--output-dir', out_path,
 '--diagram --scatter',
-'-p', threads)
+'-p', threads))
 
 file.create(file.path(out_path, 'finished.txt'))
 

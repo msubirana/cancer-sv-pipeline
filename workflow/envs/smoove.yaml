@@ -3,6 +3,7 @@ channels:
   - conda-forge 
   - bioconda
 dependencies:
-  - smoove
+  - smoove=0.2.6
+  - svtyper=0.7.0
   - bcftools
 

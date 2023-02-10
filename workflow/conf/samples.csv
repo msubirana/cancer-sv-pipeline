@@ -1,3 +1,5 @@
 sample,tumor,ctrl,experiment
-NET25,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET25_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET25_BL.bam,wgs
-NET111,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET111_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET111_BL.bam,wes
+NET25,/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam,wgs
+NET111,/home/msubirana/Documents/phd/sv_prove/NET111_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET111_BL.bam,wes
+
+
