@@ -14,6 +14,8 @@
 module load Miniconda3/4.9.2
 source activate snakemake
 
+cd /gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/mtormo/cancer-sv-pipeline/workflow
+
 snakemake -s Snakemake \
           --use-conda --conda-frontend mamba \
           --cluster-config conf/cluster_config.yaml \
