@@ -18,7 +18,7 @@ cd /gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/mtormo/cancer-sv-pipeline/wor
 
 snakemake -s Snakemake \
           --use-conda --conda-frontend mamba \
-          --cluster-config conf/cluster_config.yaml \
+          --cluster-config conf/cluster-config.yaml \
           --latency-wait 5 \
           --cluster "sbatch -J {cluster.job-name} \\
                             -t {cluster.time} \\
