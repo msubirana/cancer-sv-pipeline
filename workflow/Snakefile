@@ -369,7 +369,7 @@ rule RunManta:
         outdir=f'{config.outdir}/manta',
         duphold = f'{rules.InstallDuphold.output.binary_duphold}',
     output: 
-        f'{config.outdir}/manta/{{sample_wgs}}_.vcf',
+        f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf',
     params:
         out_run_manta=f'{config.outdir}/manta/{{sample_wgs}}_manta/results/variants/somaticSV.vcf.gz',
         tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],

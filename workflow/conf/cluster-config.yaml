@@ -59,6 +59,18 @@ smoove:
   time: 4320 
   ntasks: 2
 
+cnvkit:
+  partition: haswell
+  time: 10080 
+  ntasks: 8 
+  mem: 32gb
+
+insurveyor:
+  partition: haswell
+  time: 4320 
+  ntasks: 8 
+  mem: 32gb
+
 gridss_wes:
   partition: haswell
   time: 4320 
@@ -81,8 +93,14 @@ smoove_wes:
   time: 4320 
   ntasks: 2
 
-cnvkit:
+cnvkit_wes:
   partition: haswell
   time: 10080 
+  ntasks: 8 
+  mem: 32gb
+
+insurveyor_wes:
+  partition: haswell
+  time: 4320 
   ntasks: 8 
   mem: 32gb
