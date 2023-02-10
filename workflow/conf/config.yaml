@@ -18,18 +18,18 @@ excord_version: '0.2.4'
 # duphold install setup
 duphold_version: '0.2.3'
 
-# # installation directory
-# install_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/install_dir'
+# installation directory
+install_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/mtormo/cancer-sv-pipeline/install_dir'
 
-# # define bam directory where to carry out the analysis
-# # we assume that the index files, tumor and ctrl are located in the same directory.
-# bam_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove'
+# define bam directory where to carry out the analysis
+# we assume that the index files, tumor and ctrl are located in the same directory.
+bam_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove'
 
-# # path to reference fasta.  We assume the fasta index is located in the same directory.
-# reference: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
+# path to reference fasta.  We assume the fasta index is located in the same directory.
+reference: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
 
-# # path to the base directory for the pipeline outputs.
-# outdir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/results'
+# path to the base directory for the pipeline outputs.
+outdir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/results'
 
 # define extension of tumor and ctrl bams (example "_TI" for tumors and "_BL" for ctrls)
 tumor_ext: '_TI'
@@ -47,13 +47,18 @@ access_excludes: 'data/access-excludes.hg38.bed'
 # Exomes hg38
 exomes_hg38: 'data/exons.bed'
 
-outdir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results'
-reference: '/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
-bam_dir: '/home/msubirana/Documents/phd/sv_prove'
-install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
+# outdir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results'
+# reference: '/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
+# bam_dir: '/home/msubirana/Documents/phd/sv_prove'
+# install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
 
 
 
 # sample,tumor,ctrl,experiment
-# NET25,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET25_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET25_BL.bam,wgs
-# NET111,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET111_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/data/NET111_BL.bam,wes
+# NET25,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET25_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET25_BL.bam,wgs
+# NET111,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET111_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET111_BL.bam,wes
+
+
+# sample,tumor,ctrl,experiment
+# NET25,/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam,wgs
+# NET111,/home/msubirana/Documents/phd/sv_prove/NET111_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET111_BL.bam,wes
