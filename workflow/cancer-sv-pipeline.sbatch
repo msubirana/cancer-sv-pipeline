@@ -11,6 +11,8 @@
 #SBATCH --output=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/logs/cancer-sv-pipeline.out
 #SBATCH --error=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/logs/cancer-sv-pipeline.err
 # =============================================================================
+module load Miniconda3/4.9.2
+source activate snakemake
 
 snakemake -s Snakemake \
           --use-conda --conda-frontend mamba \
