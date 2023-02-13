@@ -7,13 +7,15 @@ import pandas as pd
 
 configfile: 'conf/config.yaml'
 
-# Q: how to wait for all samples excord in giggle? 
-# ruleorder: rule1 > rule2 > rule3
-# Q: stix list with wes?
+
 # Q: differences between jobs, tasks, nodes...
-# Q: bcftools isec for ctrl tumor in INSurVeryor
-# Q: cnkit is a batch finish with touch cnvs/finished.txt
+# nodes computers 
+# tasks = cores (sbatch take a look)
+# jobs rules
+# -c max cores per jobs
 # Q: add gargs to envs
+# conda prefix? setup.py modify pip github repo 
+# download first gargs 
 # TODO: run cluster
 # TODO: correct bam row problems
 # TODO: batch file to the directory of snakemake and run
@@ -23,6 +25,7 @@ configfile: 'conf/config.yaml'
 # TODO: seenv how to install inside snakemake? errors dependencies
 # TODO: INSurVeyor for insertions in wes?
 # TODO; after MC tag is everything ok?
+# TODO: remove tmp files insurveyor
 
 # EXAMPLE: config['ABC'] becomes config.ABC
 # This allows for dot (.) access instead of dict access
@@ -175,27 +178,29 @@ rule ExcordTumors:
     """
     input:
         script = "scripts/Excord.sh",
-        tumor_bam = f'{config.bam_dir}/{{sample}}{config.tumor_ext}.bam',
         reference = f'{config.reference}',
         excord = f'{rules.InstallExcord.output.binary_excord}',
     output:
-        f'{config.outdir}/excord/tumors/{{sample}}.bed.gz',
+        f'{config.outdir}/excord/tumors/{{sample_wgs}}.bed.gz',
+    params:
+        tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
     log:
-        f'{config.outdir}/logs/ExcordTumors_{{sample}}.log',
+        f'{config.outdir}/logs/ExcordTumors_{{sample_wgs}}.log',
     conda:
         'envs/excord.yaml',
     shell:
         """
-        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
+        {input.script} {params.tumor} {input.reference} {output.bed} {input.excord}
         """
 rule MakeGiggleIndexTumors:
     """
     Create giggle index from excord bedpe's
     """
     input:
+        expand(f'{config.outdir}/excord/tumors/{{sample}}.bed.gz', sample_wgs=samples_wgs),
         script = "scripts/MakeGiggleIndex.sh",
         giggle = f'{rules.InstallGiggle.output.giggle}',
-        excord_path = f'{config.outdir}/excord',
+        excord_path = f'{config.outdir}/excord/tumors/',
     output:
         directory(f'{config.outdir}/giggle/tumor'),
     log:
@@ -226,31 +231,33 @@ rule MakeSTIXIndexTumors:
 # ==============================================================================
 rule ExcordCtrls:
     """
-    Extract discordant/split reads from tumor BAMs
+    Extract discordant/split reads from ctrl BAMs
     """
     input:
         script = "scripts/Excord.sh",
-        tumor_bam = f'{config.bam_dir}/{{sample}}{config.tumor_ext}.bam',
         reference = f'{config.reference}',
         excord = f'{rules.InstallExcord.output.binary_excord}',
     output:
-        f'{config.outdir}/excord/ctrls/{{sample}}.bed.gz',
+        f'{config.outdir}/excord/ctrls/{{sample_wgs}}.bed.gz',
+    params:
+        ctrl = lambda wildcards: samples_data['ctrl'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
     log:
-        f'{config.outdir}/logs/ExcordCtrls_{{sample}}.log',
+        f'{config.outdir}/logs/ExcordCtrls_{{sample_wgs}}.log',
     conda:
         'envs/excord.yaml',
     shell:
         """
-        {input.script} {input.tumor_bam} {input.reference} {output.bed} {input.excord}
+        {input.script} {params.ctrl} {input.reference} {output.bed} {input.excord}
         """
 rule MakeGiggleIndexCtrls:
     """
     Create giggle index from excord bedpe's
     """
     input:
+        expand(f'{config.outdir}/excord/ctrls/{{sample_wgs}}.bed.gz', sample_wgs=samples_wgs),
         script = "scripts/MakeGiggleIndex.sh",
         giggle = f'{rules.InstallGiggle.output.giggle}',
-        excord_path = f'{config.outdir}/excord',
+        excord_path = f'{config.outdir}/excord/ctrls',
     output:
         directory(f'{config.outdir}/giggle/ctrl'),
     log:
@@ -416,7 +423,7 @@ rule cnvkit:
     input:
         script = 'scripts/cnvkit.R',
         reference = f'{config.reference}',
-        samples_csv = 'conf/samples.csv',
+        samples_csv = 'conf/samples.csv', # {config.samples_csv}
         refFlat = f'{config.refFlat}',
         out_path = f'{config.outdir}'
     output:

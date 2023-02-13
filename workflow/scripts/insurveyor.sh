@@ -14,14 +14,14 @@ mkdir -p $workdir
 workdir=${workdir}/${sample}
 mkdir -p $workdir
 
-picard FixMateInformation I=${tumor}
-picard FixMateInformation I=${ctrl}
+# picard FixMateInformation I=${tumor} TMP_DIR=${workdir}
+# picard FixMateInformation I=${ctrl} TMP_DIR=${workdir}
 
-rm -rf ${tumor}.bai
-samtools index ${tumor}
+# rm -rf ${tumor}.bai
+# samtools index ${tumor}
 
-rm -rf ${ctrl}.bai
-samtools index ${ctrl}
+# rm -rf ${ctrl}.bai
+# samtools index ${ctrl}
 
 workdir_tumor=${workdir}/tumor
 workdir_ctrl=${workdir}/ctrl

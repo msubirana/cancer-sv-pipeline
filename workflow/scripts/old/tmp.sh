@@ -26,8 +26,8 @@ mkdir -p $workdir
 java -jar $EBROOTPICARD/picard.jar FixMateInformation I=${tumor}
 java -jar $EBROOTPICARD/picard.jar FixMateInformation I=${ctrl}
 
-samtools index ${tumor}
-samtools index ${ctrl}
+samtools index ${tumor} TMP_DIR=${workdir}
+samtools index ${ctrl} TMP_DIR=${workdir}
 
 workdir_tumor=${workdir}/tumor
 workdir_ctrl=${workdir}/ctrl
@@ -55,3 +55,26 @@ rm -rf $workdir_tumor_ctrl/0003.vcf.gz*
 rm -rf $workdir_tumor_ctrl/README.txt
 
 echo 'INSurVeyor finished ' ${sample}
+
+
+threads=4
+tumor=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/insulinomas/data/WGS/BAM/INS/all_ok/NET25_TI.bam
+ctrl=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/insulinomas/data/WGS/BAM/INS/all_ok/NET25_BL.bam
+workdir=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/insulinomas/insurveyor
+reference=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa
+sample=NET25
+
+
+sbatch insurveyor.sh $threads $tumor $ctrl $workdir $sample
+
+
+#!/bin/bash
+bam=$1
+workdir=$(dirname $bam)
+workdir=${workdir}/tmp
+
+module load SAMtools/1.12-GCCcore-8.2.0
+module load picard/2.25.5-Java-11
+
+java -jar $EBROOTPICARD/picard.jar FixMateInformation I=${bam} TMP_DIR=${workdir}
+samtools index ${bam} 
