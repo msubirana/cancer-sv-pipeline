@@ -38,7 +38,7 @@ config = SimpleNamespace(**config)
 # experiment ("WGS" or "WES")
 
 samples_data = pd.read_csv(f'{config.samples_csv}')
-samples_data = pd.read_csv('conf/samples.csv')
+# samples_data = pd.read_csv('conf/samples.csv')
 samples_wgs = list(set(samples_data['sample'][samples_data['experiment'] == 'wgs'].tolist()))
 samples_wes = list(set(samples_data['sample'][samples_data['experiment'] == 'wes'].tolist()))
 
