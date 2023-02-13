@@ -423,7 +423,7 @@ rule cnvkit:
     input:
         script = 'scripts/cnvkit.R',
         reference = f'{config.reference}',
-        samples_csv = 'conf/samples.csv', # {config.samples_csv}
+        samples_csv = f'{config.samples_csv}',
         refFlat = f'{config.refFlat}',
         out_path = f'{config.outdir}'
     output:
@@ -607,7 +607,7 @@ rule cnvkit_wes:
     input:
         script = 'scripts/cnvkit_wes.R',
         reference = f'{config.reference}',
-        samples_csv = 'conf/samples.csv',
+        samples_csv = f'{config.samples_csv}',
         refFlat = f'{config.refFlat}',
         out_path = f'{config.outdir}',
         access_excludes = f'{config.access_excludes}',
