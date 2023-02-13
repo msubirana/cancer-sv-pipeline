@@ -197,7 +197,7 @@ rule MakeGiggleIndexTumors:
     Create giggle index from excord bedpe's
     """
     input:
-        expand(f'{config.outdir}/excord/tumors/{{sample}}.bed.gz', sample_wgs=samples_wgs),
+        expand(f'{config.outdir}/excord/tumors/{{sample_wgs}}.bed.gz', sample_wgs=samples_wgs),
         script = "scripts/MakeGiggleIndex.sh",
         giggle = f'{rules.InstallGiggle.output.giggle}',
         excord_path = f'{config.outdir}/excord/tumors/',

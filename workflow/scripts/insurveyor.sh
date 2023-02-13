@@ -53,5 +53,16 @@ echo 'INSurVeyor finished ' ${sample}
 
 
 
+# bam=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/insulinomas/data/WES/BAM/all_bams/NET101_TI.bam
+# reference=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa
+# workdir_tumor=/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/insulinomas/insurveyor/insurveyor/${sample}/tumor
 
+# threads=1
+# sample=NET101
+# bam=/main/marc/insulinomas/data/WES/BAM/all_bams/NET101_TI.bam
+# workdir_tumor=/main/marc/insulinomas/insurveyor/insurveyor/${sample}/tumor
+# reference=/main/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa
+
+# singularity run --bind /gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/:/main $SINGULARITY_IMAGES/insurveyor.sif \
+# --threads $threads $bam $workdir_tumor $reference
 

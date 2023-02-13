@@ -6,9 +6,11 @@ dependencies:
   - gridss
   - samtools=1.13
   - bwa
+  - conda-forge::r-biocmanager
   - r-base=4.1.1
   - r-tidyverse
-  - bioconductor-ggbio
   - r-devtools
   - r-stringr
-  - bcftools
+  - bioconda::bcftools=1.13
+  - bioconductor-variantannotation
+  - bioconductor-structuralvariantannotation

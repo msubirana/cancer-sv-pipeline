@@ -4,10 +4,6 @@ vcf_in=args[1]
 vcf_out=args[2]
 
 
-BiocManager::install("VariantAnnotation")
-BiocManager::install("stringr")
-BiocManager::install("StructuralVariantAnnotation")
-
 # SIMPLE_TYPE defines type of SV
 library(VariantAnnotation)
 library(StructuralVariantAnnotation)
