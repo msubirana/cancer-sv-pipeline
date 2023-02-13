@@ -19,7 +19,7 @@ excord_version: '0.2.4'
 duphold_version: '0.2.3'
 
 # installation directory
-install_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/mtormo/cancer-sv-pipeline/install_dir'
+install_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/repos/cancer-sv-pipeline/install_dir'
 
 # define bam directory where to carry out the analysis
 # we assume that the index files, tumor and ctrl are located in the same directory.
