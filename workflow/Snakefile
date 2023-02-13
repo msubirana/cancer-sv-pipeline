@@ -33,7 +33,7 @@ configfile: 'conf/config.yaml'
 config = SimpleNamespace(**config)
 
 # sample name without any extension (tumor, ctrl and .bai extensions removed, example NET25)
-# path of file
+# path of file.
 # type ("tumor" or "control")
 # experiment ("WGS" or "WES")
 
