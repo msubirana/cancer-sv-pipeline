@@ -25,11 +25,11 @@ install_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/repos/cancer-sv-pi
 # we assume that the index files, tumor and ctrl are located in the same directory.
 bam_dir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove'
 
-# path to reference fasta.  We assume the fasta index is located in the same directory.
-reference: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
-
 # path to the base directory for the pipeline outputs.
 outdir: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/results'
+
+# path to reference fasta.  We assume the fasta index is located in the same directory.
+reference: '/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/ref/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
 
 # define extension of tumor and ctrl bams (example "_TI" for tumors and "_BL" for ctrls)
 tumor_ext: '_TI'
