@@ -46,19 +46,3 @@ access_excludes: 'data/access-excludes.hg38.bed'
 
 # Exomes hg38
 exomes_hg38: 'data/exons.bed'
-
-# outdir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/results'
-# reference: '/mnt/lp-lab1/refs/GCA_000001405.15_GRCh38_no_alt_analysis_set/GCA_000001405.15_GRCh38_no_alt_analysis_set.fa'
-# bam_dir: '/home/msubirana/Documents/phd/sv_prove'
-# install_dir: '/home/msubirana/Documents/phd/repos/cancer-sv-pipeline/install_dir'
-
-
-
-# sample,tumor,ctrl,experiment
-# NET25,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET25_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET25_BL.bam,wgs
-# NET111,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET111_TI.bam,/gpfs42/robbyfs/scratch/lab_lpasquali/msubirana/marc/cancer-sv-prove/sv_prove/NET111_BL.bam,wes
-
-
-# sample,tumor,ctrl,experiment
-# NET25,/home/msubirana/Documents/phd/sv_prove/NET25_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET25_BL.bam,wgs
-# NET111,/home/msubirana/Documents/phd/sv_prove/NET111_TI.bam,/home/msubirana/Documents/phd/sv_prove/NET111_BL.bam,wes
