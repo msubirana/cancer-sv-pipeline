@@ -48,24 +48,24 @@ rule All:
         f'{config.install_dir}/manta-{config.manta_version}.centos6_x86_64/bin/configManta.py',
         f'{config.install_dir}/excord',
         f'{config.install_dir}/duphold',
-        f'{config.install_dir}/giggle/bin/giggle',
-        f'{config.install_dir}/stix/bin/stix',
-        f'{config.install_dir}/INSurVeyor/surveyor.py',
-        f'{config.install_dir}/SeeNV/bin/seenv.py',
+        #f'{config.install_dir}/giggle/bin/giggle',
+        #f'{config.install_dir}/stix/bin/stix',
+        #f'{config.install_dir}/INSurVeyor/surveyor.py',
+        #f'{config.install_dir}/SeeNV/bin/seenv.py',
         # wgs
         expand(f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/gridss/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs), 
         expand(f'{config.outdir}/smoove/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
         expand(f'{config.outdir}/delly/{{sample_wgs}}_pass.vcf', sample_wgs=samples_wgs),
-        expand(f'{config.outdir}/insurveyor/{{sample_wgs}}/tumor_ctrl/{{sample_wgs}}_pass.vcf.gz', sample_wgs=samples_wgs),
-        # f'{config.outdir}/cnvkit/finished.txt',
+        # expand(f'{config.outdir}/insurveyor/{{sample_wgs}}/tumor_ctrl/{{sample_wgs}}_pass.vcf.gz', sample_wgs=samples_wgs),
+        f'{config.outdir}/cnvkit/finished.txt',
         #wes
         expand(f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/smoove_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/gridss_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
         expand(f'{config.outdir}/delly_wes/{{sample_wes}}_pass.vcf', sample_wes=samples_wes),
-        expand(f'{config.outdir}/insurveyor_wes/{{sample_wes}}/tumor_ctrl/{{sample_wes}}_pass.vcf.gz', sample_wes=samples_wes),
-        # f'{config.outdir}/cnvkit_wes/finished.txt'
+        # expand(f'{config.outdir}/insurveyor_wes/{{sample_wes}}/tumor_ctrl/{{sample_wes}}_pass.vcf.gz', sample_wes=samples_wes),
+        f'{config.outdir}/cnvkit_wes/finished.txt'
         # create stix index
         # filter stix
         # survivor
