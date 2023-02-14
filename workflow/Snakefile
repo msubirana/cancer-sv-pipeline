@@ -373,11 +373,11 @@ rule RunManta:
         script = 'scripts/run_manta.sh',
         rundir = f'{rules.ConfigManta.output.runPy}',
         reference = f'{config.reference}',
-        outdir=f'{config.outdir}/manta',
         duphold = f'{rules.InstallDuphold.output.binary_duphold}',
     output: 
         f'{config.outdir}/manta/{{sample_wgs}}_pass.vcf',
     params:
+        outdir=f'{config.outdir}/manta',
         out_run_manta=f'{config.outdir}/manta/{{sample_wgs}}_manta/results/variants/somaticSV.vcf.gz',
         tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wgs].tolist()[0],
     threads:
@@ -388,7 +388,7 @@ rule RunManta:
         f'{config.outdir}/logs/RunManta_{{sample_wgs}}.log',
     shell:
         """
-        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wgs} {input.outdir} {input.duphold}
+        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wgs} {params.outdir} {input.duphold}
         """
 # ==============================================================================
 # Smoove Rules
@@ -506,11 +506,11 @@ rule RunMantaWes:
         script = 'scripts/run_manta.sh',
         rundir = f'{rules.ConfigMantaWes.output.runPy}',
         reference = f'{config.reference}',
-        outdir=f'{config.outdir}/manta_wes',
         duphold = f'{rules.InstallDuphold.output.binary_duphold}'
     output: 
         f'{config.outdir}/manta_wes/{{sample_wes}}_pass.vcf',
     params:
+        outdir=f'{config.outdir}/manta_wes',
         out_run_manta=f'{config.outdir}/manta_wes/{{sample_wes}}_manta/results/variants/somaticSV.vcf.gz',
         tumor = lambda wildcards: samples_data['tumor'][samples_data['sample']==wildcards.sample_wes].tolist()[0],
     threads:
@@ -521,7 +521,7 @@ rule RunMantaWes:
         f'{config.outdir}/logs/RunMantaWes_{{sample_wes}}.log',
     shell:
         """
-        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wes} {input.outdir} {input.duphold}
+        {input.script} {input.rundir} {threads} {params.out_run_manta} {params.tumor} {input.reference} {wildcards.sample_wes} {params.outdir} {input.duphold}
         """
 # ==============================================================================
 # Smoove WES Rules
