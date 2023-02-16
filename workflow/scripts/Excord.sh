@@ -1,13 +1,13 @@
 #!/bin/env bash
 set -u
 
-tumor_bam=$1
+bam=$1
 reference=$2
 out_bed=$3
 excord=$4
 
 
-samtools view -b $tumor_bam \
+samtools view -b $bam \
 | ${excord} \
     --discordantdistance 500 \
     --fasta ${reference} \
