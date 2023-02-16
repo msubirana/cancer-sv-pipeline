@@ -7,4 +7,8 @@ dependencies:
   - numpy=1.21.2
   - pyfaidx=0.5.9.1
   - pysam=0.16.0.1
-  # - picard
+  - htslib
+
+
+
+# wget https://github.com/kensung-lab/INSurVeyor/archive/refs/tags/1.0.2.tar.gz
